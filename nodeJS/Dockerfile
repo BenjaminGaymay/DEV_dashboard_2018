@@ -1,13 +1,11 @@
-# https://hub.docker.com/r/mhart/alpine-node/
+FROM alpine:3.8
 
-FROM mhart/alpine-node:10
-
-ADD . /app
-
-EXPOSE 3000
+ADD app.js package.json /app/
 
 WORKDIR /app
 
-RUN npm install
+RUN apk add --update nodejs nodejs-npm && npm install
+
+EXPOSE 3000
 
 CMD ["node", "app.js"]
