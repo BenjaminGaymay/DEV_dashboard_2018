@@ -1,9 +1,9 @@
 // Server creation
 
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 
-var server = require('http').Server(app);
+const server = require('http').Server(app);
 
 app.use(express.static(__dirname + '/public'));
 app.get('/', function (request, response) {
