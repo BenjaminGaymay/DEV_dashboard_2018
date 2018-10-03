@@ -10,6 +10,11 @@ REBUILD:
 
 Pas besoin pour /public/*
 
+Unit tests:
+	- npm test
+
+Ajouter un describe dans test/unitTests.js
+
 
 ************************************
 *                                  *
