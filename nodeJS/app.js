@@ -1,13 +1,22 @@
 // Server creation
 
-const express = require('express');
-const app = express();
+function makeServer(port) {
+	const express = require('express');
+	const app = express();
 
-const server = require('http').Server(app);
+	app.use(express.static(__dirname + '/public'));
+	app.get('/', function (request, response) {
+		response.sendFile(__dirname + '/public/html/index.html');
+	});
 
-app.use(express.static(__dirname + '/public'));
-app.get('/', function (request, response) {
-	response.sendFile(__dirname + '/public/html/index.html');
-});
+	return app.listen(port);
+};
 
-server.listen(3000);
+const server = makeServer(3000);
+
+
+// Export functions and objects
+
+module.exports = {
+	server
+};

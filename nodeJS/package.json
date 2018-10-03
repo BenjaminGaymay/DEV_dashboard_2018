@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
   "dependencies": {
     "express": "^4.16.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "supertest": "^3.3.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
