@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-ADD app.js package.json /app/
+ADD app.js package.json about.json /app/
 
 WORKDIR /app
 

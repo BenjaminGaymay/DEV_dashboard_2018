@@ -1,0 +1,19 @@
+{
+	"client": {
+		"host": ""
+	},
+	"server": {
+		"current_time":  0,
+		"services": [{
+			"name": "weather",
+			"widgets": [{
+				"name": "city_temperature",
+				"description": "Affichage  de la  temperature  pour  une  ville",
+				"params": [{
+					"name": "city",
+					"type": "string"
+				}]
+			}]
+		}]
+	}
+}
