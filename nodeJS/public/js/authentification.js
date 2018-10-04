@@ -1,5 +1,5 @@
 (function() {
-	var config = {
+	const config = {
 		apiKey: "AIzaSyBxW4lBdIKKuaUAsAl3wJe4KvvGeA_qCco",
 		authDomain: "dashboard-fa9f0.firebaseapp.com",
 		databaseURL: "https://dashboard-fa9f0.firebaseio.com",
