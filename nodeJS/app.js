@@ -3,8 +3,10 @@
 function makeServer(port) {
 	const express = require('express');
 	const app = express();
+	const server = require('http').Server(app);
 
 	app.use(express.static(__dirname + '/public'));
+
 	app.get('/', function (request, response) {
 		response.sendFile(__dirname + '/public/html/index.html');
 	});
@@ -18,7 +20,7 @@ function makeServer(port) {
 		response.send(about);
 	});
 
-	return app.listen(port);
+	return server.listen(port);
 };
 
 
@@ -32,6 +34,7 @@ function getUnixTime() {
 // Start server
 
 const server = makeServer(3000);
+var io = require('socket.io')(server);
 
 
 // Export functions and objects
