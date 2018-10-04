@@ -36,6 +36,10 @@ function getUnixTime() {
 const server = makeServer(3000);
 var io = require('socket.io')(server);
 
+io.on('connection', function(client) {
+	client.on('join', function() {
+	});
+});
 
 // Export functions and objects
 
