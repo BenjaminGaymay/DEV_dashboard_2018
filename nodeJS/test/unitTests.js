@@ -12,6 +12,11 @@ describe('Loading Express', function () {
       .get('/foo/bar')
       .expect(404, done);
   });
+  it('Responds to about.json', function testPath(done) {
+    request(app.server)
+      .get('/about.json')
+      .expect(200, done);
+  });
 });
 
 
