@@ -14,12 +14,22 @@ function makeServer(port) {
 		const about = JSON.parse(fs.readFileSync('about.json', 'utf8'));
 
 		about.client.host = request.ip.split(':').pop();
-		about.server.current_time = Date.now() / 1000 | 0;
+		about.server.current_time = getUnixTime();
 		response.send(about);
 	});
 
 	return app.listen(port);
 };
+
+
+// Timer functions
+
+function getUnixTime() {
+	return Date.now() / 1000 | 0;
+};
+
+
+// Start server
 
 const server = makeServer(3000);
 
