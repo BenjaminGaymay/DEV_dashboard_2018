@@ -8,6 +8,9 @@
   },
   "dependencies": {
     "express": "^4.16.3",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.1",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
@@ -15,7 +18,9 @@
     "supertest": "^3.3.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "serve": "node app",
+    "serve:watch": "nodemon app"
   },
   "keywords": [],
   "author": "",

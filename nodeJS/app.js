@@ -20,7 +20,9 @@ function makeServer(port) {
 		response.send(about);
 	});
 
-	return server.listen(port);
+	return server.listen(port, () => {
+		console.log(`Server launched on ${server.address().address}${server.address().port}`);
+	});
 };
 
 
