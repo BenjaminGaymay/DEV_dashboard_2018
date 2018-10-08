@@ -14,36 +14,44 @@
 	const passwordInput = document.getElementById('passwordInput');
 	const btnLogIn = document.getElementById('btnLogIn');
 	const btnSignUp = document.getElementById('btnSignUp');
+	const btnLogOut = document.getElementById('btnLogOut');
 
 
-	// Log In
-	btnLogIn.addEventListener("click", e => {
-		const email = emailInput.value;
-		const password = passwordInput.value;
-		const auth = firebase.auth();
+	if (btnLogIn) {
 
-		auth.signInWithEmailAndPassword(email, password);
-	});
+		// Log In
+		btnLogIn.addEventListener("click", e => {
+			const email = emailInput.value;
+			const password = passwordInput.value;
 
-	// Log Out
-	btnLogOut.addEventListener("click", e => {
-		firebase.auth().signOut();
-	});
 
-	// Create account
-	btnSignUp.addEventListener("click", e => {
-		const email = emailInput.value;
-		const password = passwordInput.value;
-		const auth = firebase.auth();
+			firebase.auth().signInWithEmailAndPassword(email, password);
+		});
 
-		auth.createUserWithEmailAndPassword(email, password);
-	});
+		// Create account
+		btnSignUp.addEventListener("click", e => {
+			const email = emailInput.value;
+			const password = passwordInput.value;
+			const auth = firebase.auth();
+
+			firebase.auth().createUserWithEmailAndPassword(email, password);
+		});
+
+	} else {
+
+		// Log Out
+		btnLogOut.addEventListener("click", e => {
+			firebase.auth().signOut();
+		});
+	};
 
 	// Detect connection changements
 	firebase.auth().onAuthStateChanged(firebaseUser => {
 		if (firebaseUser) {
-			console.log(firebaseUser);
+			socket.emit('logIn', {"user": firebaseUser, "URL": window.location.pathname});
+		} else {
+			socket.emit('notConnected', {"URL": window.location.pathname});
 		};
-	})
+	});
 
 }());

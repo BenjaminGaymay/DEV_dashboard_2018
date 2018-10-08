@@ -11,6 +11,14 @@ function makeServer(port) {
 		response.sendFile(__dirname + '/public/html/index.html');
 	});
 
+	app.get('/connection', function (request, response) {
+		response.sendFile(__dirname + '/public/html/connection.html');
+	});
+
+	app.get('/widgets', function (request, response) {
+		response.sendFile(__dirname + '/public/html/homePage.html');
+	});
+
 	app.get('/about.json', function (request, response) {
 		const fs = require('fs');
 		const about = JSON.parse(fs.readFileSync('about.json', 'utf8'));
@@ -34,10 +42,34 @@ function getUnixTime() {
 // Start server
 
 const server = makeServer(3000);
-var io = require('socket.io')(server);
+const io = require('socket.io')(server);
+
+// const clients = []
+
+// class clientInfos {
+// 	constructor(email) {
+// 		this.email = email;
+// 	};
+// };
 
 io.on('connection', function(client) {
 	client.on('join', function() {
+	});
+
+	client.on('logIn', function(datas) {
+		console.log("Client", datas.user.email, "logged in");
+		// client.push(new clientInfos(datas.user.email));
+		client.email = datas.user.email;
+		if (datas.URL == "/connection") {
+			client.emit('redirect', "/widgets");
+		};
+	});
+
+	client.on('notConnected', function(datas) {
+		console.log("Client not connected");
+		if (datas.URL != "/connection") {
+			client.emit('redirect', "/connection");
+		};
 	});
 });
 
