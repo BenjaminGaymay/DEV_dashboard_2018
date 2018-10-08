@@ -7,14 +7,9 @@ const router = require('./routes');
 const path = require('path');
 const passport = require('passport');
 require('dotenv').config();
-const db = require('./db');
 
-// const db = require('./db')(process.env.MONGO_URI);
-
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', () => {
-//   console.log('COUCOU');
-// });
+// Connect to mongo database
+require('./db');
 
 function makeServer(port) {
 	const app = express();
@@ -32,6 +27,7 @@ function makeServer(port) {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.set('layout', 'layout/layout');
+
 	app.use('/', router);
 	app.use(passport.initialize());
 	app.use(passport.session());

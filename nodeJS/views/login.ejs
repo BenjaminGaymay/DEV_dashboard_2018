@@ -17,10 +17,10 @@
                 <div class="register-container">
                     <h1>Inscription</h1>
                     <div class="container">
-                        <form action="" class="register-form">
-                            <input type="email" id="input-register-email" placeholder="Email...">
-                            <input type="password" id="input-register-password" placeholder="Password...">
-                            <input type="password" id="input-register-password2" placeholder="Repeat password...">
+                        <form action="/register" method="POST" class="register-form">
+                            <input type="email" name="email" id="input-register-email" placeholder="Email...">
+                            <input type="password" name="password1" id="input-register-password" placeholder="Password...">
+                            <input type="password" name="password2" id="input-register-password2" placeholder="Repeat password...">
                             <button class="btn btn-login" id="btn-register">Register</button>
                         </form>
                     </div>
