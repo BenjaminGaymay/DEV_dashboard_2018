@@ -5,9 +5,12 @@ function makeServer(port) {
 	const express = require('express');
 	const app = express();
 	const server = require('http').Server(app);
-	const viewDir = `${__dirname}/public/html`;
+	const ejsExpress = require('express-ejs-layouts');
 
 	app.use(express.static(__dirname + '/public'));
+	app.use(ejsExpress);
+	app.set('layout', 'layout/layout');
+
 
 	require('./routes')(app);
 
@@ -18,9 +21,7 @@ function makeServer(port) {
 
 
 
-
 // Start server
-
 const server = makeServer(3000);
 const io = require('socket.io')(server);
 

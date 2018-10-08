@@ -1,5 +1,4 @@
 const path = require('path');
-const views = path.resolve('./public/html');
 
 // Path view file toussa lol
 const _ = file => path.join(path.resolve('./public/html'), file);
@@ -9,15 +8,17 @@ function getUnixTime() {
 	return Date.now() / 1000 | 0;
 };
 
-console.log(views);
-
 module.exports = app => {
+
+    app.set('view engine', 'ejs');
+	app.set('views', path.join(path.resolve('./views')));
+
     app.get('/', (req, res, next) => {
-        res.sendFile(_('index.html'));
+        res.render('index');
     });
 
     app.get('/login', (req, res, next) => {
-        res.sendFile(_('login.html'));
+        res.render('login');
     });
 
     app.get('/about.json', (req, res, next) => {
