@@ -10,19 +10,18 @@
 
 	firebase.initializeApp(config);
 
-	const emailInput = document.getElementById('emailInput');
-	const passwordInput = document.getElementById('passwordInput');
-	const btnLogIn = document.getElementById('btnLogIn');
-	const btnSignUp = document.getElementById('btnSignUp');
-	const btnLogOut = document.getElementById('btnLogOut');
+	const btnLogIn = document.getElementById('btn-log-in');
+	const btnSignUp = document.getElementById('btn-register');
+	const btnLogOut = document.getElementById('btn-log-out');
 
 
 	if (btnLogIn) {
 
 		// Log In
 		btnLogIn.addEventListener("click", e => {
-			const email = emailInput.value;
-			const password = passwordInput.value;
+			e.preventDefault();
+			const email = document.getElementById('input-login-email').value;
+			const password = document.getElementById('input-login-password').value;
 
 
 			firebase.auth().signInWithEmailAndPassword(email, password);
@@ -30,17 +29,21 @@
 
 		// Create account
 		btnSignUp.addEventListener("click", e => {
-			const email = emailInput.value;
-			const password = passwordInput.value;
-			const auth = firebase.auth();
+			e.preventDefault();
+			const email = document.getElementById('input-register-email').value;
+			const password = document.getElementById('input-register-password').value;
+			const password2 = document.getElementById('input-register-password2').value;
 
-			firebase.auth().createUserWithEmailAndPassword(email, password);
+			if (password == password2) {
+				firebase.auth().createUserWithEmailAndPassword(email, password);
+			};
 		});
 
 	} else {
 
 		// Log Out
 		btnLogOut.addEventListener("click", e => {
+			e.preventDefault();
 			firebase.auth().signOut();
 		});
 	};

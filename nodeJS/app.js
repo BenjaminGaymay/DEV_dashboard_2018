@@ -41,15 +41,15 @@ io.on('connection', function(client) {
 		console.log("Client", datas.user.email, "logged in");
 		// client.push(new clientInfos(datas.user.email));
 		client.email = datas.user.email;
-		if (datas.URL == "/connection") {
+		if (datas.URL == "/login") {
 			client.emit('redirect', "/widgets");
 		};
 	});
 
 	client.on('notConnected', function(datas) {
 		console.log("Client not connected");
-		if (datas.URL != "/connection") {
-			client.emit('redirect', "/connection");
+		if (datas.URL != "/login") {
+			client.emit('redirect', "/login");
 		};
 	});
 });
