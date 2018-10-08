@@ -28,4 +28,12 @@ module.exports = app => {
 		about.server.current_time = getUnixTime();
 		res.send(about);
 	});
+
+	app.get('/connection', function (req, res) {
+		res.sendFile(_('connection.html'));
+	});
+
+	app.get('/widgets', function (req, res) {
+		res.sendFile(_('homePage.html'));
+	});
 };
