@@ -2,12 +2,17 @@
 
 function makeServer(port) {
 	const express = require('express');
+	const session = require('express-session');
 	const app = express();
 	const server = require('http').Server(app);
 	const ejsExpress = require('express-ejs-layouts');
+	const bodyParser = require('body-parser');
 
 	app.use(express.static(__dirname + '/public'));
+	app.use(session({ secret: "Jean-Eude" }));
 	app.use(ejsExpress);
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: true }));
 	app.set('layout', 'layout/layout');
 
 
@@ -24,32 +29,8 @@ function makeServer(port) {
 const server = makeServer(3000);
 const io = require('socket.io')(server);
 
-// const clients = []
-
-// class clientInfos {
-// 	constructor(email) {
-// 		this.email = email;
-// 	};
-// };
-
 io.on('connection', function(client) {
 	client.on('join', function() {
-	});
-
-	client.on('logIn', function(datas) {
-		console.log("Client", datas.user.email, "logged in");
-		// client.push(new clientInfos(datas.user.email));
-		client.email = datas.user.email;
-		if (datas.URL == "/login") {
-			client.emit('redirect', "/widgets");
-		};
-	});
-
-	client.on('notConnected', function(datas) {
-		console.log("Client not connected");
-		if (datas.URL != "/login") {
-			client.emit('redirect', "/login");
-		};
 	});
 });
 
