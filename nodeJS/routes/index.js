@@ -14,7 +14,6 @@ module.exports = app => {
 	app.set('views', path.join(path.resolve('./views')));
 
     app.get('/', (req, res, next) => {
-		console.log(require('../firebase').currentUser);
 		if (req.session.authentificated) {
 			res.render('index');
 		} else {
