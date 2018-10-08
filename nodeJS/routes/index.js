@@ -14,12 +14,36 @@ module.exports = app => {
 	app.set('views', path.join(path.resolve('./views')));
 
     app.get('/', (req, res, next) => {
-        res.render('index');
+		console.log(require('../firebase').currentUser);
+		if (req.session.authentificated) {
+			res.render('index');
+		} else {
+			res.redirect('/login');
+		};
     });
 
     app.get('/login', (req, res, next) => {
-        res.render('login');
-    });
+		if (req.session.authentificated) {
+			res.redirect('widgets');
+		} else {
+			res.render('login');
+		};
+	});
+
+	app.post('/login', (req, res) => {
+		// console.log(req.body.email, req.body.password);
+		if (req.body.email == "a@a.com") {
+			req.session.authentificated = true;
+			res.redirect("/widgets");
+		} else {
+			res.redirect("/login");
+		};
+	});
+
+	app.post('/logout', (req,res) => {
+		req.session.authentificated = false;
+		res.redirect('/login');
+	});
 
     app.get('/about.json', (req, res, next) => {
 		const fs = require('fs');
@@ -30,7 +54,11 @@ module.exports = app => {
 		res.send(about);
 	});
 
-	app.get('/widgets', function (req, res) {
-		res.render('widgets');
+	app.get('/widgets', (req, res) => {
+		if (req.session.authentificated) {
+			res.render('widgets');
+		} else {
+			res.redirect('/login');
+		};
 	});
 };
