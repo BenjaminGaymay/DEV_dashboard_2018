@@ -1,6 +1,5 @@
 // Server creation
 
-
 function makeServer(port) {
 	const express = require('express');
 	const app = express();

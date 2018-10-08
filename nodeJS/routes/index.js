@@ -19,7 +19,11 @@ module.exports = app => {
 
     app.get('/login', (req, res, next) => {
         res.render('login');
-    });
+	});
+
+	app.post('/login', (req, res) => {
+		// ZERT
+	});
 
     app.get('/about.json', (req, res, next) => {
 		const fs = require('fs');
