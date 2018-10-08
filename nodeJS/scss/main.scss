@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,600');
+@import './bootstrap/bootstrap.scss';
+
+.login-container,
+.register-container {
+    margin-top: 150px;
+    font-family: 'Nunito';
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.background-gradient {
+    background-image: linear-gradient(to right top, #264b83, #006ea1, #0090b3, #00b1b8, #55d1b6);
+}
+
+.login {
+    min-height: 100vh;
+}
+
+
+.login-container,
+.register-container {
+    background: rgba(255, 255, 255, 0.2);
+    width: 80%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 25px;
+
+    h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+}
+
+
+.login-form,
+.register-form {
+    input {
+        padding: 8px 10px;
+        border: none;
+        display: block;
+        margin: 0 auto;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        width: 75%;
+    }
+
+    button {
+        display: block;
+        width: 75%;
+        margin: 0 auto;
+        // background: #2b4647;
+        color: #333;
+        &:hover {
+            background: #ccc;
+        }
+    }
+}
