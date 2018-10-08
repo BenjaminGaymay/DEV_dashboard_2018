@@ -1,6 +1,8 @@
 FROM alpine:3.8
 
 ADD app.js package.json about.json /app/
+ADD routes /app/routes
+ADD views /app/views
 
 WORKDIR /app
 
