@@ -4,8 +4,8 @@ const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
 
 const cssFiles = {
-    in: './scss/main.scss',
-    dir: './public/css',
+    in: './src/scss/main.scss',
+    dir: './src/public/css',
     file: 'style.css',
 };
 

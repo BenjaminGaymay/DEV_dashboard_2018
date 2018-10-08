@@ -28,8 +28,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "serve": "node app",
-    "serve:watch": "nodemon app",
+    "serve": "node src/app",
+    "serve:watch": "nodemon src/app",
     "sass:build": "gulp sass",
     "sass:watch": "gulp sass:watch"
   },
