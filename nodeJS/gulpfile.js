@@ -21,5 +21,5 @@ gulp.task('sass', () =>
 );
 
 gulp.task('sass:watch', () =>
-    gulp.watch(cssFiles.in, ['sass'])
+    gulp.watch(cssFiles.in, gulp.series('sass'))
 );
