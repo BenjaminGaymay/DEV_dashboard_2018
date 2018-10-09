@@ -6,6 +6,9 @@ const session = require('express-session');
 const router = require('./routes');
 const path = require('path');
 const passport = require('passport');
+const flash = require('connect-flash');
+
+// Load environment variables
 require('dotenv').config();
 
 // Connect to mongo database
@@ -27,6 +30,8 @@ function makeServer(port) {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.set('layout', 'layout/layout');
+
+	app.use(flash());
 
 	app.use('/', router);
 	app.use(passport.initialize());

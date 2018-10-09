@@ -1,12 +1,15 @@
 const router = require('express').Router();
 const UserSchema = require('../models/user');
+const bcrypt = require('bcrypt');
+
+
 
 function getUnixTime() {
 	return Date.now() / 1000 | 0;
 };
 
 router.get('/', (req, res, next) => {
-	res.render('login');
+	res.render('index');
 	// if (req.session.authentificated) {
 	// 	res.render('index');
 	// } else {
@@ -44,12 +47,36 @@ router.post('/register', (req, res) => {
 		email
 	} = req.body;
 
-	if (password1 === password2 && password1.length > 6) {
+	// bcrypt.hash(password1, 10, (err, hash) => {
+	// 	console.log(hash);
+	// 	bcrypt.compare("azerty", hash, (err, res) => {
+	// 		console.log(res);
+	// 	});
+	// });
 
+	let hashedPassword;
+
+	if (password1 === password2) {
+		bcrypt.hash(password1, 10, (err, hash) => hashedPassword = hash);
+		// console.log(hashedPassword);
+		const user = new UserSchema({
+			email,
+			password: password1
+		});
+		user.save((err) => {
+			if (err) throw err;
+			console.log('User saved!');
+		})
+		// const user = new UserSchema({
+		// 	email
+		// })
+		req.session.authentificated = true;
+		res.redirect('/widgets');
 	} else {
-
+		req.flash('info', {msg: 'Blabla pas bon'});
+		res.redirect('/login');
 	}
-	console.log(password1, password2, email);
+	// console.log(password1, password2, email);
 });
 
 router.get('/about.json', (req, res, next) => {

@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../src/app');
+const app = require('../app');
 
 describe('Loading Express', function () {
   it('Responds to /', function testSlash(done) {

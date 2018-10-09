@@ -1,5 +1,8 @@
 <div class="login background-gradient">
     <div class="container-fluid">
+    <% if ( msg.length > 0 ) { %>
+        <p>Message: <%= msg %> </p>
+    <% } %>
         <div class="row">
             <div class="col-6 no-padding">
                 <div class="login-container">
