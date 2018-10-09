@@ -10,6 +10,4 @@ $(function() {
             enabled: true
 		}
 	}).data('gridster');
-	// ADD WIDGET WITH GRIDSTER
-	// gridster.add_widget.apply(gridster, ['<li class="yellow" ></li>', 2, 2]);
 });

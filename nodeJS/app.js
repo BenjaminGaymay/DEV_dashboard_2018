@@ -29,8 +29,14 @@ function makeServer(port) {
 const server = makeServer(3000);
 const io = require('socket.io')(server);
 
+const widgets = require('./widgets/widgets');
+
 io.on('connection', function(client) {
 	client.on('join', function() {
+	});
+
+	client.on('add', function() {
+		widgets.weather(client);
 	});
 });
 
