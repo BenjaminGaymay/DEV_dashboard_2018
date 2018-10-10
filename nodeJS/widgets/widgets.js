@@ -1,4 +1,6 @@
 const request = require('request');
+const fs = require('fs');
+const ejs = require('ejs');
 
 // LANGUAGES
 // en - [DEFAULT] English
@@ -42,27 +44,71 @@ const request = require('request');
 // S - Scientific (Kelvin, m/s, mm)
 // I - Fahrenheit (F, mph, in)
 
-function weather(client) {
-	const city = "Paris";
-	const lang = "fr";
-	const unit = "M";
+var id = 0;
 
-	request('http://api.weatherbit.io/v2.0/current?key=9b3006fece9b40f58d233568c8728c6c&unit=' + unit + '&lang=' + lang + '&city=' + city, function(err, resp, body) {
+const cities = JSON.parse(fs.readFileSync(__dirname + "/cities_20000.json", 'utf-8'));
+var weatherCities = [];
+
+for (const citie of cities) {
+	if (citie.city_name && citie.country_name)
+		weatherCities.push(citie.city_name + ', ' + citie.country_name);
+};
+
+
+
+function update(client, widgetID, widgetConfig) {
+	if (widgetConfig.type === "weather") {
+		weather(client, widgetConfig, widgetID);
+	};
+};
+
+function sendWidget(client, widgetConfig, widget) {
+	if (client.widgets[widget.id]) {
+			client.widgets[widget.id] = widgetConfig;
+			client.emit('updateWidget', widget);
+	} else {
+		client.widgets[widget.id] = widgetConfig;
+		client.emit('addWidget', widget);
+		id += 1;
+	};
+};
+
+function weather(client, widgetConfig, widgetID = id.toString()) {
+	const city = widgetConfig.city;
+	const country = widgetConfig.country;
+	const lang = widgetConfig.lang;
+	const unit = widgetConfig.unit;
+
+	request('http://api.weatherbit.io/v2.0/current?key=9b3006fece9b40f58d233568c8728c6c&unit=' + unit + '&lang=' + lang + '&city=' + city + '&country=' + country, function(err, resp, body) {
 		const requestResult = JSON.parse(body).data[0];
 		const weather = requestResult.weather;
 
-		const widget = {
-			content: "<h1> Température à " + city + " : " + requestResult.temp + "°" + (unit == "M" ? "C" : "F") + "</h1><img src='https://www.weatherbit.io/static/img/icons/" + weather.icon + ".png' alt='" + weather.description + "'></img>",
-			style: "color: #909090; border-color: #cccccc; font-size: 2rem; text-align: center",
-			// faut faire le css pour une class weather directement dans le style.css -> on peut ajouter le responsive toussa toussa
-			// le style ici ca va juste etre pour la personnalisation (couleurs par ex)
-			sizeX: 2,
-			sizeY: 2
-		};
-		client.emit('addWidget', widget);
+		ejs.renderFile(__dirname + "/templates/weather.ejs", {
+				id: widgetID,
+				city: city,
+				temp: requestResult.temp,
+				unit: (unit == "M" ? "C" : "F"),
+				icon: weather.icon,
+				description: weather.description,
+				citiesList: weatherCities
+			}, 'cache', function(error, content) {
+				const widget = {
+					id: widgetID,
+					content: content,
+					style: "color: #909090; border-color: #cccccc; font-size: 2rem; text-align: center", // PERSONALISATION ? sinon on supprime
+					sizeX: widgetConfig.sizeX,
+					sizeY: widgetConfig.sizeY,
+					posX: widgetConfig.posX ? widgetConfig.posX : undefined,
+					posY: widgetConfig.posY ? widgetConfig.posY : undefined
+				};
+
+				sendWidget(client, widgetConfig, widget);
+		});
 	});
 };
 
 module.exports = {
-	weather
+	weather,
+	update,
+	weatherCities
 };

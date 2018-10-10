@@ -1,4 +1,5 @@
 const path = require('path');
+const widgets = require('../widgets/widgets');
 
 // Path view file toussa lol
 const _ = file => path.join(path.resolve('./public/html'), file);
@@ -55,7 +56,9 @@ module.exports = app => {
 
 	app.get('/widgets', (req, res) => {
 		if (req.session.authentificated) {
-			res.render('widgets');
+			res.render('widgets', {
+				citiesList: widgets.weatherCities
+			});
 		} else {
 			res.redirect('/login');
 		};

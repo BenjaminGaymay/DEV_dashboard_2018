@@ -9,5 +9,5 @@ $(function() {
         resize: {
             enabled: true
 		}
-	}).data('gridster');
+    }).data('gridster');
 });

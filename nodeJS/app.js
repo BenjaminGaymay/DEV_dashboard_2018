@@ -33,10 +33,39 @@ const widgets = require('./widgets/widgets');
 
 io.on('connection', function(client) {
 	client.on('join', function() {
+		client.nbApps = 0;
+		client.widgets = {};
 	});
 
-	client.on('add', function() {
-		widgets.weather(client);
+	client.on('updateAll', function() {
+		for (const widget of Object.entries(client.widgets)) {
+			widgets.update(client, widget[0], widget[1]);
+		};
+	});
+
+	client.on('serialize', function(serialized) {
+		console.log(JSON.parse(serialized));
+	});
+
+	// WIDGETS BASICS CONFIGURATIONS
+
+	client.on('addWeatherWidget', function(config) {
+		const widgetConfig = {
+			type: "weather",
+			sizeX: '2',
+			sizeY: '2',
+			city: config.city,
+			country: config.country,
+			lang: config.lang,
+			unit: 'M'
+		};
+		widgets.weather(client, widgetConfig);
+	});
+
+	client.on('changeWeatherCity', function(config) {
+		client.widgets[config.id].city = config.city;
+		client.widgets[config.id].country = config.country;
+		widgets.update(client, config.id, client.widgets[config.id]);
 	});
 });
 

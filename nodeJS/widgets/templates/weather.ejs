@@ -1,0 +1,13 @@
+<ion-icon name="settings" id='setting_<%= id %>'></ion-icon>
+<form id='weatherSettings_<%= id %>' style='display: none'>
+	<input list="cities_<%= id %>" placeholder="City ...">
+	<datalist id='cities_<%= id %>'>
+		<% for(var i = 0 ; i < citiesList.length ; i++) { %>
+			<option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>
+		<% } %>
+	</datalist>
+	<button class="btn btn-action"> Change city </button>
+</form>
+
+<h1> Température à <%= city %> : <%= temp %>°<%= unit %> </h1>
+<img src="https://www.weatherbit.io/static/img/icons/<%= icon %>.png" alt="<%= description %>"></img>

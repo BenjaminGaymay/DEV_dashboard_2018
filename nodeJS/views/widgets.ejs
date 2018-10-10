@@ -4,7 +4,17 @@
 	<button id="btn-log-out" class="btn btn-action"> Log Out </button>
 </form>
 
-<button id="btn-widget" class="btn btn-action"> Add widget </button>
+<form id='add-weather'>
+    <input id="input-weather-city" list="cities" placeholder="City ...">
+    <datalist id='cities'>
+        <% for(var i = 0 ; i < citiesList.length ; i++) { %>
+            <option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>
+        <% } %>
+    </datalist>
+    <button class="btn btn-action"> Add weather widget </button>
+</form>
+
+<button id="btn-update" class="btn btn-action"> Update widgets </button>
 
 <div class="gridster ready" id="widgetsArray">
     <ul>
