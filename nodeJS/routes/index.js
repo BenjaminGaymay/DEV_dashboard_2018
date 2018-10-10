@@ -1,8 +1,35 @@
 const router = require('express').Router();
 const UserSchema = require('../models/user');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
+const passportLocal = require('passport-local');
+const LocalStrategy = passportLocal.Strategy;
 
 
+passport.use(new LocalStrategy((username, password, done) => {
+	User.findOne({ username }, (err, user) => {
+		if (err) return done(err);
+		if (!user) {
+			return done(null, false, { message: 'Incorrect username.' });
+		}
+		if (!user.validPassword(password)) {
+			return done(null, false, { message: 'Incorrect password.' });
+		}
+		return done(null, false, { message: 'Incorrect password.' });
+	});
+	}
+));
+
+
+passport.serializeUser((user, done) => {
+	done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+	User.findById(id, (err, user) => {
+		done(err, user);
+	});
+});
 
 function getUnixTime() {
 	return Date.now() / 1000 | 0;
@@ -10,11 +37,6 @@ function getUnixTime() {
 
 router.get('/', (req, res, next) => {
 	res.render('index');
-	// if (req.session.authentificated) {
-	// 	res.render('index');
-	// } else {
-	// 	res.redirect('/login');
-	// };
 });
 
 // router.get('/login', (req, res, next) => {
@@ -35,8 +57,12 @@ router.get('/', (req, res, next) => {
 // 	};
 // });
 
+router.post('/login',
+    passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login', failureFlash: true })
+);
+
 router.post('/logout', (req,res) => {
-	req.session.authentificated = false;
+	// req.session.authentificated = false;
 	res.redirect('/login');
 });
 
@@ -47,27 +73,6 @@ router.post('/register', (req, res) => {
 		email
 	} = req.body;
 
-	if (password1 === password2) {
-		bcrypt.hash(password1, 10, (err, hash) => hashedPassword = hash);
-		// console.log(hashedPassword);
-		const user = new UserSchema({
-			email,
-			password: password1
-		});
-		user.save((err) => {
-			if (err) throw err;
-			console.log('User saved!');
-		})
-		// const user = new UserSchema({
-		// 	email
-		// })
-		req.session.authentificated = true;
-		res.redirect('/widgets');
-	} else {
-		req.flash('info', {msg: 'Blabla pas bon'});
-		res.redirect('/login');
-	}
-	// console.log(password1, password2, email);
 });
 
 router.get('/login', (req, res) => {
@@ -92,11 +97,12 @@ router.get('/about.json', (req, res, next) => {
 });
 
 router.get('/widgets', (req, res) => {
-	if (req.session.authentificated) {
-		res.render('widgets');
-	} else {
-		res.redirect('/login');
-	};
+	// if (req.session.authentificated) {
+	// 	res.render('widgets');
+	// } else {
+	// 	res.redirect('/login');
+	// };
+	res.redirect('/login');
 });
 
 module.exports = router;

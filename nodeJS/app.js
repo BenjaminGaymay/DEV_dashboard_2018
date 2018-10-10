@@ -6,13 +6,14 @@ const session = require('express-session');
 const router = require('./routes');
 const path = require('path');
 const passport = require('passport');
-const flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
 
 // Load environment variables
 require('dotenv').config();
-
 // Connect to mongo database
 require('./db');
+
+
 
 function makeServer(port) {
 	const app = express();
@@ -21,17 +22,14 @@ function makeServer(port) {
 	app.set('view engine', 'ejs');
 	app.set('views', path.join(path.resolve('./views')));
 	app.use(express.static(__dirname + '/public'));
-	app.use(session({
-		secret: "Jean-Eude",
-		resave: true,
-		saveUninitialized: true
-	}));
+	app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+	app.use(cookieParser());
 	app.use(ejsExpress);
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.set('layout', 'layout/layout');
 
-	app.use(flash());
+	// app.use(flash());
 
 	app.use('/', router);
 	app.use(passport.initialize());
