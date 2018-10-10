@@ -17,23 +17,23 @@ router.get('/', (req, res, next) => {
 	// };
 });
 
-router.get('/login', (req, res, next) => {
-	if (req.session.authentificated) {
-		res.redirect('widgets');
-	} else {
-		res.render('login');
-	};
-});
+// router.get('/login', (req, res, next) => {
+// 	if (req.session.authentificated) {
+// 		res.redirect('widgets');
+// 	} else {
+// 		res.render('login');
+// 	};
+// });
 
-router.post('/login', (req, res) => {
-	// console.log(req.body.email, req.body.password);
-	if (req.body.email == "a@a.com") {
-		req.session.authentificated = true;
-		res.redirect("/widgets");
-	} else {
-		res.redirect("/login");
-	};
-});
+// router.post('/login', (req, res) => {
+// 	// console.log(req.body.email, req.body.password);
+// 	if (req.body.email == "a@a.com") {
+// 		req.session.authentificated = true;
+// 		res.redirect("/widgets");
+// 	} else {
+// 		res.redirect("/login");
+// 	};
+// });
 
 router.post('/logout', (req,res) => {
 	req.session.authentificated = false;
@@ -46,15 +46,6 @@ router.post('/register', (req, res) => {
 		password2,
 		email
 	} = req.body;
-
-	// bcrypt.hash(password1, 10, (err, hash) => {
-	// 	console.log(hash);
-	// 	bcrypt.compare("azerty", hash, (err, res) => {
-	// 		console.log(res);
-	// 	});
-	// });
-
-	let hashedPassword;
 
 	if (password1 === password2) {
 		bcrypt.hash(password1, 10, (err, hash) => hashedPassword = hash);
@@ -77,6 +68,18 @@ router.post('/register', (req, res) => {
 		res.redirect('/login');
 	}
 	// console.log(password1, password2, email);
+});
+
+router.get('/login', (req, res) => {
+	console.log('Inside GET /login callback function')
+	console.log(req.sessionID)
+	res.send(`You got the login page!\n`)
+});
+
+router.post('/login', (req, res) => {
+	console.log('Inside POST /login callback function')
+	console.log(req.body)
+	res.send(`You posted to the login page!\n`)
 });
 
 router.get('/about.json', (req, res, next) => {
