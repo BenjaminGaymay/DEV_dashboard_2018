@@ -1,4 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const UserSchema = require('./models/user');
 
 module.exports = passport => {
@@ -20,12 +21,37 @@ module.exports = passport => {
         });
     });
 
+    passport.use('google', new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: process.env.GOOGLE_CALLBACK
+    },
+        (token, refreshToken, profile, done) => {
+            UserSchema.findOne({ 'google.id ': profile.id }, (err, user) => {
+                if (err) return done(err);
+                if (user) {
+                    return done(null, user);
+                } else {
+                    const newUser = new UserSchema();
+
+                    newUser.google.id = profile.id;
+                    newUser.google.token = token;
+                    newUser.google.name = profile.displayName;
+                    newUser.google.email = profile.emails[0].value;
+
+                    newUser.save(err => {
+                        if (err) throw err;
+                        return done(null, newUser);
+                    });
+                }
+            })
+        }))
+
     // =========================================================================
     // LOCAL SIGNUP ============================================================
     // =========================================================================
     // we are using named strategies since we have one for login and one for signup
     // by default, if there was no name, it would just be called 'local'
-
     passport.use('local-signup', new LocalStrategy({ passReqToCallback: true },
         (req, username, password, done) => {
             UserSchema.findOne({ 'local.username' :  username }, (err, user) => {
