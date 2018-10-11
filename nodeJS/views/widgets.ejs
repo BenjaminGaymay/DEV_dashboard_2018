@@ -1,5 +1,19 @@
 <h1> WIDGETS </h1>
 
-<form action="/logout" method="POST">
-	<button id="btn-log-out" class="btn btn-action"> Log Out </button>
+<form id='add-weather'>
+    <input id="input-weather-city" list="weatherCities" placeholder="City ...">
+    <input id="input-weather-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
+    <datalist id='weatherCities'>
+        <% for(var i = 0 ; i < citiesList.length ; i++) { %>
+            <option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>
+        <% } %>
+    </datalist>
+    <button class="btn btn-action"> Add weather widget </button>
 </form>
+
+<button id="btn-update" class="btn btn-action"> Update widgets </button>
+
+<div class="gridster ready" id="widgetsArray">
+    <ul>
+    </ul>
+</div>

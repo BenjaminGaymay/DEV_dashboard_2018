@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const passport = require('passport');
+const widgets = require('../widgets/widgets');
 
 router.get('/', (req, res, next) => {
 	res.render('index');
@@ -38,23 +39,27 @@ router.get('/about.json', (req, res, next) => {
 	res.send(about);
 });
 
-router.get('/widgets', isLoggedIn, (req, res) => {
-	res.render('widgets');
-});
-
 router.get('/logout', (req, res) => {
 	req.logout();
 	res.redirect('/');
 })
 
+router.get('/widgets', isLoggedIn ,(req, res) => {
+	res.render('widgets', {
+		citiesList: widgets.weatherCities
+	});
+});
+
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated())
 		return next();
-	res.redirect('/');
+	req.flash('loginMessage', 'Vous devez être connecté pour accèder à ce contenu');
+	res.redirect('/login');
 }
 
 function getUnixTime() {
 	return Date.now() / 1000 | 0;
 };
+
 
 module.exports = router;
