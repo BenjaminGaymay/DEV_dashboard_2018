@@ -110,6 +110,7 @@ function weather(client, widgetConfig) {
 		const response = JSON.parse(body);
 		if (response.status_code == "429") {
 			// Faudra faire une truc dans le template et juste le send
+			// et mettre != du code de succes plutot
 			sendWidget(client, widgetConfig, {
 				id: widgetConfig.id,
 				content: "API error",
