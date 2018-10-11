@@ -20,6 +20,4 @@ gulp.task('sass', () =>
         .pipe(gulp.dest(cssFiles.dir))
 );
 
-gulp.task('sass:watch', () =>
-    gulp.watch(cssFiles.in, gulp.series('sass'))
-);
+gulp.task('sass:watch', () => gulp.watch(cssFiles.in, gulp.series('sass')));

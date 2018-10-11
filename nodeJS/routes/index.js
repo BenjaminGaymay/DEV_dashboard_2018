@@ -1,66 +1,65 @@
-const path = require('path');
+const router = require('express').Router();
+const passport = require('passport');
 const widgets = require('../widgets/widgets');
 
-// Path view file toussa lol
-const _ = file => path.join(path.resolve('./public/html'), file);
+router.get('/', (req, res, next) => {
+	res.render('index');
+});
 
-// Timer functions
+router.get('/profil', isLoggedIn, (req, res) => {
+	res.render('profil', { user: req.user });
+});
+
+router.get('/login', (req, res) => {
+	res.render('login', { message: req.flash('loginMessage') });
+});
+
+router.post('/login', passport.authenticate('local-login', {
+	successRedirect : '/widgets', // redirect to the secure profile section
+	failureRedirect : '/login', // redirect back to the signup page if there is an error
+	failureFlash : true // allow flash messages
+}));
+
+router.get('/signup', (req, res) => {
+	res.render('signup', { message: req.flash('signupMessage') });
+});
+
+router.post('/signup', passport.authenticate('local-signup', {
+	successRedirect : '/widgets', // redirect to the secure profile section
+	failureRedirect : '/signup', // redirect back to the signup page if there is an error
+	failureFlash : true // allow flash messages
+}));
+
+router.get('/about.json', (req, res, next) => {
+	const fs = require('fs');
+	const about = JSON.parse(fs.readFileSync('about.json', 'utf8'));
+
+	about.client.host = req.ip.split(':').pop();
+	about.server.current_time = getUnixTime();
+	res.send(about);
+});
+
+router.get('/logout', (req, res) => {
+	req.logout();
+	res.redirect('/');
+})
+
+router.get('/widgets', isLoggedIn ,(req, res) => {
+	res.render('widgets', {
+		citiesList: widgets.weatherCities
+	});
+});
+
+function isLoggedIn(req, res, next) {
+	if (req.isAuthenticated())
+		return next();
+	req.flash('loginMessage', 'Vous devez être connecté pour accèder à ce contenu');
+	res.redirect('/login');
+}
+
 function getUnixTime() {
 	return Date.now() / 1000 | 0;
 };
 
-module.exports = app => {
 
-    app.set('view engine', 'ejs');
-	app.set('views', path.join(path.resolve('./views')));
-
-    app.get('/', (req, res, next) => {
-		if (req.session.authentificated) {
-			res.render('index');
-		} else {
-			res.redirect('/login');
-		};
-    });
-
-    app.get('/login', (req, res, next) => {
-		if (req.session.authentificated) {
-			res.redirect('widgets');
-		} else {
-			res.render('login');
-		};
-	});
-
-	app.post('/login', (req, res) => {
-		// console.log(req.body.email, req.body.password);
-		if (req.body.email == "a@a.com") {
-			req.session.authentificated = true;
-			res.redirect("/widgets");
-		} else {
-			res.redirect("/login");
-		};
-	});
-
-	app.post('/logout', (req,res) => {
-		req.session.authentificated = false;
-		res.redirect('/login');
-	});
-
-    app.get('/about.json', (req, res, next) => {
-		const fs = require('fs');
-		const about = JSON.parse(fs.readFileSync('about.json', 'utf8'));
-
-		about.client.host = req.ip.split(':').pop();
-		about.server.current_time = getUnixTime();
-		res.send(about);
-	});
-
-	app.get('/widgets', (req, res) => {
-		if (req.session.authentificated) {
-			res.render('widgets', {
-				citiesList: widgets.weatherCities
-			});
-		} else {
-			res.redirect('/login');
-		};
-	});
-};
+module.exports = router;
