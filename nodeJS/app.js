@@ -55,17 +55,22 @@ io.on('connection', function(client) {
 			sizeX: '2',
 			sizeY: '2',
 			city: config.city,
-			country: config.country,
+			country: widgets.getCountryCode(config.city, config.country),
 			lang: config.lang,
 			unit: 'M'
 		};
-		widgets.weather(client, widgetConfig);
+
+		if (widgetConfig.country)
+			widgets.weather(client, widgetConfig);
+		// else YA UNE ERREUR
 	});
 
 	client.on('changeWeatherCity', function(config) {
 		client.widgets[config.id].city = config.city;
-		client.widgets[config.id].country = config.country;
-		widgets.update(client, config.id, client.widgets[config.id]);
+		client.widgets[config.id].country = widgets.getCountryCode(config.city, config.country);
+		if (client.widgets[config.id].country)
+			widgets.update(client, config.id, client.widgets[config.id]);
+		// else YA UNE ERREUR
 	});
 });
 

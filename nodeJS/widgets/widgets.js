@@ -52,9 +52,17 @@ var weatherCities = [];
 for (const citie of cities) {
 	if (citie.city_name && citie.country_name)
 		weatherCities.push(citie.city_name + ', ' + citie.country_name);
+	else if (citie.city_name && citie.state_name)
+		weatherCities.push(citie.city_name + ', ' + citie.state_name);
 };
 
-
+function getCountryCode(city, country) {
+	for (const cityDatas of cities) {
+		if ((cityDatas.city_name == city && cityDatas.country_name == country) || (cityDatas.city_name == city && cityDatas.state_name == country))
+			return cityDatas.country_code;
+	};
+	return undefined
+};
 
 function update(client, widgetID, widgetConfig) {
 	if (widgetConfig.type === "weather") {
@@ -110,5 +118,6 @@ function weather(client, widgetConfig, widgetID = id.toString()) {
 module.exports = {
 	weather,
 	update,
-	weatherCities
+	weatherCities,
+	getCountryCode
 };

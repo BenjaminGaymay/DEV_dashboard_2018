@@ -5,8 +5,8 @@
 </form>
 
 <form id='add-weather'>
-    <input id="input-weather-city" list="cities" placeholder="City ...">
-    <datalist id='cities'>
+    <input id="input-weather-city" list="weatherCities" placeholder="City ...">
+    <datalist id='weatherCities'>
         <% for(var i = 0 ; i < citiesList.length ; i++) { %>
             <option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>
         <% } %>
