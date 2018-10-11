@@ -15,17 +15,24 @@ function serializeGridster(socket) {
 
 function addListeners(socket, id) {
     $('#setting_' + id).click(function() {
-        $(this).next('form').toggle();
+        $(`#weatherSettings_${id}`).toggle();
     });
 
-    $('#weatherSettings_' + id).submit(function(e) {
+    $(`#weatherSettings_${id}`).submit(function(e) {
         e.preventDefault();
-        const city = $(this).children('input').val();
         const id = $(this).parent().attr('id');
-        socket.emit('changeWeatherCity', {
+        const city = $(`#input-update-city_${id}`).val();
+        const interval = $(`#input-update-interval_${id}`).val();
+        socket.emit('updateWeather', {
             city: city.split(', ')[0],
-			country: city.split(', ')[1],
+            country: city.split(', ')[1],
+            interval: interval,
             id: id
         });
+        $(this).toggle();
+    });
+
+    $(`#delete_${id}`).click(function() {
+        socket.emit('removeWidgetByID', id);
     });
 };

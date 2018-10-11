@@ -6,6 +6,7 @@
 
 <form id='add-weather'>
     <input id="input-weather-city" list="weatherCities" placeholder="City ...">
+    <input id="input-weather-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
     <datalist id='weatherCities'>
         <% for(var i = 0 ; i < citiesList.length ; i++) { %>
             <option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>

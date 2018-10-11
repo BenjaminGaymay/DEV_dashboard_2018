@@ -24,7 +24,6 @@ function makeServer(port) {
 };
 
 
-
 // Start server
 const server = makeServer(3000);
 const io = require('socket.io')(server);
@@ -35,11 +34,12 @@ io.on('connection', function(client) {
 	client.on('join', function() {
 		client.nbApps = 0;
 		client.widgets = {};
+		widgets.initializeTimer(client);
 	});
 
 	client.on('updateAll', function() {
-		for (const widget of Object.entries(client.widgets)) {
-			widgets.update(client, widget[0], widget[1]);
+		for (const widget of Object.values(client.widgets)) {
+			widgets.update(client, widget);
 		};
 	});
 
@@ -51,26 +51,48 @@ io.on('connection', function(client) {
 
 	client.on('addWeatherWidget', function(config) {
 		const widgetConfig = {
+			id: client.nbApps.toString(),
 			type: "weather",
+			interval: config.interval,
 			sizeX: '2',
 			sizeY: '2',
 			city: config.city,
-			country: widgets.getCountryCode(config.city, config.country),
+			country: config.country,
+			countryCode: widgets.getCountryCode(config.city, config.country),
 			lang: config.lang,
 			unit: 'M'
 		};
 
-		if (widgetConfig.country)
+		if (widgetConfig.country) {
+			client.nbApps += 1;
 			widgets.weather(client, widgetConfig);
+		}
 		// else YA UNE ERREUR
 	});
 
-	client.on('changeWeatherCity', function(config) {
+	client.on('updateWeather', function(config) {
 		client.widgets[config.id].city = config.city;
-		client.widgets[config.id].country = widgets.getCountryCode(config.city, config.country);
-		if (client.widgets[config.id].country)
-			widgets.update(client, config.id, client.widgets[config.id]);
+		client.widgets[config.id].country = config.country;
+		client.widgets[config.id].countryCode = widgets.getCountryCode(config.city, config.country);
+		client.widgets[config.id].interval = config.interval;
+		widgets.resetTimer(client, client.widgets[config.id]);
+		if (client.widgets[config.id].countryCode)
+			widgets.update(client, client.widgets[config.id]);
 		// else YA UNE ERREUR
+	});
+
+	client.on('removeWidgetByID', function(widgetID) {
+		if (client.widgets[widgetID]) {
+			clearInterval(client.widgets[widgetID].timer);
+			client.emit('removeWidget', widgetID);
+			delete client.widgets[widgetID];
+		};
+	});
+
+	client.on('disconnect', function() {
+		for (const widget of Object.values(client.widgets)) {
+			clearInterval(widget.timer);
+		};
 	});
 });
 

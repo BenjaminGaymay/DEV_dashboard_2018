@@ -1,7 +1,9 @@
 <ion-icon name="settings" id='setting_<%= id %>'></ion-icon>
+<ion-icon name="trash" id='delete_<%= id %>'></ion-icon>
 <form id='weatherSettings_<%= id %>' style='display: none'>
-	<input list="weatherCities" placeholder="City ...">
-	<button class="btn btn-action"> Change city </button>
+	<input id="input-update-city_<%= id %>" list="weatherCities" placeholder="City ..." value="<%= cityCountry %>">
+	<input id="input-update-interval_<%= id %>" placeholder="Interval in seconds..." type="number" step="1" min="10" value="<%= interval %>">
+	<button class="btn btn-action"> Change configuration </button>
 </form>
 
 <h1> Température à <%= city %> : <%= temp %>°<%= unit %> </h1>

@@ -2,6 +2,27 @@ const request = require('request');
 const fs = require('fs');
 const ejs = require('ejs');
 
+// Timer
+
+function resetTimer(client, widget) {
+	clearInterval(widget.timer);
+	timer(client, widget);
+};
+
+function timer(client, widget) {
+	widget.timer = setInterval(function() {
+		update(client, widget);
+		console.log('update widget: '+ widget.id + " every " +  widget.interval + "s");
+	}, widget.interval * 1000);
+};
+
+function initializeTimer(client) {
+	for (const widget of Object.values(client.widgets)) {
+		if (widget)
+			timer(client, widget);
+	};
+};
+
 // LANGUAGES
 // en - [DEFAULT] English
 // ar - Arabic
@@ -44,8 +65,6 @@ const ejs = require('ejs');
 // S - Scientific (Kelvin, m/s, mm)
 // I - Fahrenheit (F, mph, in)
 
-var id = 0;
-
 const cities = JSON.parse(fs.readFileSync(__dirname + "/cities_20000.json", 'utf-8'));
 var weatherCities = [];
 
@@ -64,9 +83,9 @@ function getCountryCode(city, country) {
 	return undefined
 };
 
-function update(client, widgetID, widgetConfig) {
+function update(client, widgetConfig) {
 	if (widgetConfig.type === "weather") {
-		weather(client, widgetConfig, widgetID);
+		weather(client, widgetConfig);
 	};
 };
 
@@ -77,23 +96,40 @@ function sendWidget(client, widgetConfig, widget) {
 	} else {
 		client.widgets[widget.id] = widgetConfig;
 		client.emit('addWidget', widget);
-		id += 1;
+		timer(client, widgetConfig);
 	};
 };
 
-function weather(client, widgetConfig, widgetID = id.toString()) {
+function weather(client, widgetConfig) {
 	const city = widgetConfig.city;
-	const country = widgetConfig.country;
+	const countryCode = widgetConfig.countryCode;
 	const lang = widgetConfig.lang;
 	const unit = widgetConfig.unit;
 
-	request('http://api.weatherbit.io/v2.0/current?key=9b3006fece9b40f58d233568c8728c6c&unit=' + unit + '&lang=' + lang + '&city=' + city + '&country=' + country, function(err, resp, body) {
-		const requestResult = JSON.parse(body).data[0];
+	request('http://api.weatherbit.io/v2.0/current?key=9b3006fece9b40f58d233568c8728c6c&unit=' + unit + '&lang=' + lang + '&city=' + city + '&country=' + countryCode, function(err, resp, body) {
+		const response = JSON.parse(body);
+		if (response.status_code == "429") {
+			// Faudra faire une truc dans le template et juste le send
+			sendWidget(client, widgetConfig, {
+				id: widgetConfig.id,
+				content: "API error",
+				style: "color: #909090; border-color: #cccccc; font-size: 2rem; text-align: center", // PERSONALISATION ? sinon on supprime
+				sizeX: widgetConfig.sizeX,
+				sizeY: widgetConfig.sizeY,
+				posX: widgetConfig.posX ? widgetConfig.posX : undefined,
+				posY: widgetConfig.posY ? widgetConfig.posY : undefined
+			});
+			return;
+		};
+
+		const requestResult = response.data[0];
 		const weather = requestResult.weather;
 
 		ejs.renderFile(__dirname + "/templates/weather.ejs", {
-				id: widgetID,
+				id: widgetConfig.id,
 				city: city,
+				cityCountry: city + ', ' + widgetConfig.country,
+				interval: widgetConfig.interval,
 				temp: requestResult.temp,
 				unit: (unit == "M" ? "C" : "F"),
 				icon: weather.icon,
@@ -101,7 +137,7 @@ function weather(client, widgetConfig, widgetID = id.toString()) {
 				citiesList: weatherCities
 			}, 'cache', function(error, content) {
 				const widget = {
-					id: widgetID,
+					id: widgetConfig.id,
 					content: content,
 					style: "color: #909090; border-color: #cccccc; font-size: 2rem; text-align: center", // PERSONALISATION ? sinon on supprime
 					sizeX: widgetConfig.sizeX,
@@ -116,6 +152,8 @@ function weather(client, widgetConfig, widgetID = id.toString()) {
 };
 
 module.exports = {
+	initializeTimer,
+	resetTimer,
 	weather,
 	update,
 	weatherCities,
