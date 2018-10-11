@@ -3,13 +3,15 @@ const ejsExpress = require('express-ejs-layouts');
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
-const router = require('./routes');
 const path = require('path');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
+const flash = require('connect-flash');
+require('dotenv').config();
+
+const router = require('./routes');
 
 // Load environment variables
-require('dotenv').config();
 // Connect to mongo database
 require('./db');
 
@@ -21,19 +23,25 @@ function makeServer(port) {
 
 	app.set('view engine', 'ejs');
 	app.set('views', path.join(path.resolve('./views')));
+	app.set('layout', 'layout/layout');
 	app.use(express.static(__dirname + '/public'));
+
 	app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 	app.use(cookieParser());
 	app.use(ejsExpress);
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
-	app.set('layout', 'layout/layout');
+	app.use(flash());
 
-	// app.use(flash());
 
-	app.use('/', router);
 	app.use(passport.initialize());
 	app.use(passport.session());
+	require('./routes/passport')(passport);
+	app.use((req, res, next) => {
+		res.locals.isAuthenticated = req.isAuthenticated();
+		next();
+	});
+	app.use('/', router);
 
 	return server.listen(port, () => {
 		console.log(`Server launched on ${server.address().address}${server.address().port}`);
