@@ -1,11 +1,15 @@
 <i class="fas fa-cog" id='setting_<%= id %>'></i>
 <i class="fas fa-trash-alt" id='delete_<%= id %>'></i>
 
-<form id='weatherSettings_<%= id %>' style='display: none'>
-	<input id="input-update-city_<%= id %>" list="weatherCities" placeholder="City ..." value="<%= cityCountry %>">
-	<input id="input-update-interval_<%= id %>" placeholder="Interval in seconds..." type="number" step="1" min="10" value="<%= interval %>">
-	<button class="btn btn-action"> Change configuration </button>
+<form class="form-group" id='weatherSettings_<%= id %>' style='display: none'>
+	<input class="form-control" id="input-update-city_<%= id %>" list="weatherCities" placeholder="City ..." value="<%= cityCountry %>">
+	<br>
+	<input class="form-control" id="input-update-interval_<%= id %>" placeholder="Interval in seconds..." type="number" step="1" min="10" value="<%= interval %>">
+	<br>
+	<button class="btn btn-action align-text-bottom"> Change configuration </button>
 </form>
 
-<h1> Température à <%= city %> : <%= temp %>°<%= unit %> </h1>
-<img src="https://www.weatherbit.io/static/img/icons/<%= icon %>.png" alt="<%= description %>"></img>
+<div id='widget_<%= id %>'>
+	<h1> Température à <%= city %> : <%= temp %>°<%= unit %> </h1>
+	<img src="https://www.weatherbit.io/static/img/icons/<%= icon %>.png" alt="<%= description %>"></img>
+</div>

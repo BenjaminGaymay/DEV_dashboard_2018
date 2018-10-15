@@ -66,43 +66,12 @@
         list-style: none;
         border-radius: 20px;
         overflow: hidden;
-        border: 5px solid black;
+        border: 5px solid #cccccc;
         background-color: white;
-
-        &.red {
-            border-color: red;
-        }
-
-        &.pink {
-            border-color: pink;
-        }
-
-        &.blue {
-            border-color: blue;
-        }
-
-        &.magenta {
-            border-color: magenta;
-        }
-
-        &.yellow {
-            border-color: yellow;
-        }
-
-        &.black {
-            border-color: black;
-        }
-
-        &.grey {
-            border-color: grey;
-        }
-
-        &.white {
-            background-color: black;
-            border-color: white;
-        }
+        color: #909090;
+        font-size: 2rem;
+        text-align: center;
     }
-
 }
 
 .page-footer {

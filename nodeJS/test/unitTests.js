@@ -5,7 +5,7 @@ describe('Loading Express', function () {
   it('Responds to /', function testSlash(done) {
   request(app.server)
     .get('/')
-    .expect(302, done);
+    .expect(200, done);
   });
   it('Responds to /login', function testLogin(done) {
     request(app.server)
