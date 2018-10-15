@@ -18,6 +18,8 @@ router.post('/profile/password', isLoggedIn, (req, res) => {
 				throw Error('Les nouveaux mots de passe doivent être identiques !')
 			} else {
 				person.local.password = person.generateHash(req.body.newPassword);
+
+				// person.markModified('widgets');
 				return person.save();
 			}
 		})
