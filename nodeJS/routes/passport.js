@@ -28,11 +28,14 @@ module.exports = passport => {
 
     passport.use('local-signup', new LocalStrategy({ passReqToCallback: true },
         (req, username, password, done) => {
+            console.log(req.body);
             UserSchema.findOne({ 'local.username' :  username }, (err, user) => {
                 if (err)
                     return done(err);
                 if (user) {
                     return done(null, false, req.flash('signupMessage', 'Ce nom d\'utilisateur est déjà utilisé'));
+                } else if (req.body.password !== req.body.confirmPassword) {
+                    return done(null, false, req.flash('signupMessage', 'Les mots de passe doivent être identiques'));
                 } else {
                     const newUser = new UserSchema();
                     newUser.local.username = username;
