@@ -1,5 +1,7 @@
 <h1> WIDGETS </h1>
 
+<h1> Bonjour <%= username %> </h1>
+
 <form id='add-weather'>
     <input id="input-weather-city" list="weatherCities" placeholder="City ...">
     <input id="input-weather-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
@@ -12,6 +14,8 @@
 </form>
 
 <button id="btn-update" class="btn btn-action"> Update widgets </button>
+
+<button id="btn-serialize" class="btn btn-action"> Save widgets </button>
 
 <div class="gridster ready" id="widgetsArray">
     <ul>

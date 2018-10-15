@@ -9,5 +9,9 @@
     <%- body %>
     <%- include('../includes/footer') %>
     <%- include('../includes/scripts') %>
+    <% if (locals.socket) { %>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/sockets.js"></script>
+    <% } %>
 </body>
 </html>

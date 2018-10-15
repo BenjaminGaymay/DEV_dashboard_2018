@@ -45,8 +45,11 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/widgets', isLoggedIn ,(req, res) => {
+	res.cookie('username', req.user.local.username, {maxAge: 1000, httpOnly: false});
 	res.render('widgets', {
-		citiesList: widgets.weatherCities
+		citiesList: widgets.weatherCities,
+		username: req.user.local.username,
+		socket: true
 	});
 });
 

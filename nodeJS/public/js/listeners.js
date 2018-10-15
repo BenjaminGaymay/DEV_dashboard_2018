@@ -10,7 +10,7 @@ function serializeGridster(socket) {
             sizeY: $(node).attr("data-sizey")
         });
     };
-    socket.emit("serialize", JSON.stringify(widgets));
+    socket.emit("serialize", widgets);
 };
 
 function addListeners(socket, id) {
@@ -35,4 +35,9 @@ function addListeners(socket, id) {
     $(`#delete_${id}`).click(function() {
         socket.emit('removeWidgetByID', id);
     });
+};
+
+function getCookie (name) {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
 };

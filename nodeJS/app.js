@@ -7,6 +7,7 @@ const path = require('path');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
+const UserSchema = require('./routes/models/user');
 require('dotenv').config();
 
 const router = require('./routes');
@@ -56,10 +57,18 @@ const io = require('socket.io')(server);
 const widgets = require('./widgets/widgets');
 
 io.on('connection', function(client) {
-	client.on('join', function() {
-		client.nbApps = 0;
-		client.widgets = {};
-		widgets.initializeTimer(client);
+	client.on('join', function(username) {
+		UserSchema.findOne({"local.username": username}).then(function(bonhomme) {
+			client.username = username;
+			client.widgets = {}; // recupérer les objets du bonhomme
+			widgets.initializeTimer(client);
+			client.nbApps = Object.keys(client.widgets).length;
+		}).catch(function(err) {
+			client.widgets = {};
+			client.nbApps = 0;
+			console.log("spa normal");
+		});
+
 	});
 
 	client.on('updateAll', function() {
@@ -69,7 +78,18 @@ io.on('connection', function(client) {
 	});
 
 	client.on('serialize', function(serialized) {
-		console.log(JSON.parse(serialized));
+		for (const datas of serialized) {
+			var widget = client.widgets[datas.id];
+			widget.posX = datas.posX;
+			widget.posY = datas.posY;
+			widget.sizeX = datas.sizeX;
+			widget.sizeY = datas.sizeY;
+		};
+		UserSchema.findOne({"local.username": client.username}).then(function(bonhomme) {
+			// faut sauvegarder client.widgets
+		}).catch(function(err) {
+			console.log("spa normal");
+		});
 	});
 
 	// WIDGETS BASICS CONFIGURATIONS
@@ -81,28 +101,34 @@ io.on('connection', function(client) {
 			interval: config.interval,
 			sizeX: '2',
 			sizeY: '2',
-			city: config.city,
-			country: config.country,
-			countryCode: widgets.getCountryCode(config.city, config.country),
-			lang: config.lang,
-			unit: 'M'
+			other: {
+				city: config.city,
+				country: config.country,
+				countryCode: widgets.getCountryCode(config.city, config.country),
+				lang: config.lang,
+				unit: 'M'
+			}
 		};
 
-		if (widgetConfig.country) {
+		if (widgetConfig.other.country) {
 			client.nbApps += 1;
 			widgets.weather(client, widgetConfig);
-		}
+		} else
+			console.log("weather: missing country");
 		// else YA UNE ERREUR
 	});
 
 	client.on('updateWeather', function(config) {
-		client.widgets[config.id].city = config.city;
-		client.widgets[config.id].country = config.country;
-		client.widgets[config.id].countryCode = widgets.getCountryCode(config.city, config.country);
-		client.widgets[config.id].interval = config.interval;
-		widgets.resetTimer(client, client.widgets[config.id]);
-		if (client.widgets[config.id].countryCode)
-			widgets.update(client, client.widgets[config.id]);
+		var widgetConfig = client.widgets[config.id];
+		widgetConfig.other.city = config.city;
+		widgetConfig.other.country = config.country;
+		widgetConfig.other.countryCode = widgets.getCountryCode(config.city, config.country);
+		widgetConfig.interval = config.interval;
+		widgets.resetTimer(client, widgetConfig);
+		if (widgetConfig.other.countryCode)
+			widgets.update(client, widgetConfig);
+		else
+		console.log("weather: missing country");
 		// else YA UNE ERREUR
 	});
 

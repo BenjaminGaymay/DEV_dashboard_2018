@@ -2,7 +2,7 @@
 	const socket = io.connect(window.location.host);
 
 	socket.on('connect', function() {
-		socket.emit('join');
+		socket.emit('join', getCookie('username'));
 	});
 
 	socket.on('redirect', function(newURL) {
@@ -24,12 +24,15 @@
 		socket.emit('updateAll');
 	});
 
+    $('#btn-serialize').click(function() {
+        serializeGridster(socket);
+    });
+
 	socket.on('addWidget', function(widget) {
 		gridster.add_widget('<li id="' + widget.id + '" style="' + widget.style + '">' + widget.content + '</li>', widget.sizeX, widget.sizeY);
 		if (widget.posY && widget.posX)
 			$(`#${widget.id}`).attr("data-row", widget.posY).attr("data-col", widget.posX);
 
-		serializeGridster(socket);
 		addListeners(socket, widget.id);
 	});
 

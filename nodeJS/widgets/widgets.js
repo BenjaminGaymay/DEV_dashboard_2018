@@ -101,10 +101,10 @@ function sendWidget(client, widgetConfig, widget) {
 };
 
 function weather(client, widgetConfig) {
-	const city = widgetConfig.city;
-	const countryCode = widgetConfig.countryCode;
-	const lang = widgetConfig.lang;
-	const unit = widgetConfig.unit;
+	const city = widgetConfig.other.city;
+	const countryCode = widgetConfig.other.countryCode;
+	const lang = widgetConfig.other.lang;
+	const unit = widgetConfig.other.unit;
 
 	request('http://api.weatherbit.io/v2.0/current?key=9b3006fece9b40f58d233568c8728c6c&unit=' + unit + '&lang=' + lang + '&city=' + city + '&country=' + countryCode, function(err, resp, body) {
 		const response = JSON.parse(body);
@@ -129,7 +129,7 @@ function weather(client, widgetConfig) {
 		ejs.renderFile(__dirname + "/templates/weather.ejs", {
 				id: widgetConfig.id,
 				city: city,
-				cityCountry: city + ', ' + widgetConfig.country,
+				cityCountry: city + ', ' + widgetConfig.other.country,
 				interval: widgetConfig.interval,
 				temp: requestResult.temp,
 				unit: (unit == "M" ? "C" : "F"),
