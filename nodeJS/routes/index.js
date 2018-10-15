@@ -71,6 +71,15 @@ router.get('/widgets', isLoggedIn ,(req, res) => {
 	});
 });
 
+router.get('/login/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+router.get('/login/google/callback', (req, res, next) => {
+	passport.authenticate('google', {
+		successRedirect: '/profil',
+		failureRedirect: '/login'
+	})
+});
+
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated())
 		return next();
