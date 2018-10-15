@@ -57,6 +57,7 @@ const widgets = require('./widgets/widgets');
 
 io.on('connection', function(client) {
 	client.on('join', function() {
+
 		client.nbApps = 0;
 		client.widgets = {};
 		widgets.initializeTimer(client);
@@ -115,9 +116,9 @@ io.on('connection', function(client) {
 	});
 
 	client.on('disconnect', function() {
-		for (const widget of Object.values(client.widgets)) {
-			clearInterval(widget.timer);
-		};
+		// for (const widget of Object.values(client.widgets)) {
+		// 	clearInterval(widget.timer);
+		// };
 	});
 });
 

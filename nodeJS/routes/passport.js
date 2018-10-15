@@ -40,7 +40,7 @@ module.exports = passport => {
                     const newUser = new UserSchema();
                     newUser.local.username = username;
                     newUser.local.password = newUser.generateHash(password);
-                    newUser.save(function(err) {
+                    newUser.save((err) => {
                         if (err)
                             throw err;
                         return done(null, newUser);
