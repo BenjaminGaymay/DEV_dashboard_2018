@@ -1,15 +1,16 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="">Dashboard</a>
+    <a class="navbar-brand" href="/">Dashboard</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <div class="navbar-nav ml-auto">
           <% if (!isAuthenticated) { %>
             <a class="nav-item nav-link" href="/login">Se connecter</a>
             <a class="nav-item nav-link" href="/signup">S'inscrire</a>
           <% } else { %>
-            <a class="nav-item nav-link" href="/profil">Profil</a>
+            <a class="nav-item nav-link" href="/profile">Profile</a>
             <a class="nav-item nav-link" href="/widgets">Widgets</a>
             <a class="nav-item nav-link" href="/logout">Se déconnecter</a>
           <% } %>

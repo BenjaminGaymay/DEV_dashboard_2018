@@ -141,9 +141,9 @@ io.on('connection', function(client) {
 	});
 
 	client.on('disconnect', function() {
-		for (const widget of Object.values(client.widgets)) {
-			clearInterval(widget.timer);
-		};
+		// for (const widget of Object.values(client.widgets)) {
+		// 	clearInterval(widget.timer);
+		// };
 	});
 });
 

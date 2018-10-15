@@ -1,13 +1,36 @@
 const router = require('express').Router();
 const passport = require('passport');
 const widgets = require('../widgets/widgets');
+const UserSchema = require('./models/user');
 
 router.get('/', (req, res, next) => {
 	res.render('index');
 });
 
-router.get('/profil', isLoggedIn, (req, res) => {
-	res.render('profil', { user: req.user });
+router.get('/profile', isLoggedIn, (req, res) => {
+	res.render('profile', { user: req.user, success: req.flash('success'), error: req.flash('error') });
+});
+
+router.post('/profile/password', isLoggedIn, (req, res) => {
+	UserSchema.findOne({ 'local.username': req.user.local.username })
+		.then(person => {
+			if (req.body.newPassword !== req.body.confirmPassword) {
+				throw Error('Les nouveaux mots de passe doivent être identiques !')
+			} else {
+				person.local.password = person.generateHash(req.body.newPassword);
+
+				// person.markModified('widgets');
+				return person.save();
+			}
+		})
+		.then(data => {
+			req.flash('success', 'Mot de passe modifié avec succèss');
+			res.redirect('/profile');
+		})
+		.catch(err => {
+			req.flash('error', err.message);
+			res.redirect('/profile');
+		})
 });
 
 router.get('/login', (req, res) => {
