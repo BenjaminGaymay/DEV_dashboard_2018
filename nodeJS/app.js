@@ -8,6 +8,7 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const UserSchema = require('./routes/models/user');
+const widgets = require('./widgets/widgets');
 require('dotenv').config();
 
 const router = require('./routes');
@@ -17,6 +18,7 @@ const router = require('./routes');
 require('./db');
 
 
+// Server creation
 
 function makeServer(port) {
 	const app = express();
@@ -37,7 +39,9 @@ function makeServer(port) {
 
 	app.use(passport.initialize());
 	app.use(passport.session());
+
 	require('./routes/passport')(passport);
+
 	app.use((req, res, next) => {
 		res.locals.isAuthenticated = req.isAuthenticated();
 		next();
@@ -50,26 +54,48 @@ function makeServer(port) {
 };
 
 
+// Widgets saver
+
+// Save widgets on database
+function saveWidgetsOnDatabase(client) {
+	UserSchema.findOne({"local.username": client.username}).then(function(bonhomme) {
+		bonhomme.widgets = Object.assign({}, client.widgets);
+		for (const widget of Object.values(client.widgets))
+			bonhomme.widgets[widget.id].timer = undefined;
+		bonhomme.markModified("widgets");
+		return bonhomme.save();
+	}).then(function() {
+		console.log(" * Widgets successfully update on database");
+	}).catch(function(err) {
+		console.log(" /!\\ Widgets update on database failed !");
+	});
+};
+
+
 // Start server
+
 const server = makeServer(3000);
 const io = require('socket.io')(server);
 
-const widgets = require('./widgets/widgets');
+// Define socket.io listeners
 
 io.on('connection', function(client) {
+
+	// GENERICS FUNCTIONS
+
 	client.on('join', function(username) {
+		// Initialize new user
+		client.widgets = {};
+		client.nbApps = 0;
+
 		UserSchema.findOne({"local.username": username}).then(function(bonhomme) {
-			client.username = username;
+			client.username = bonhomme.local.username;
 			client.widgets = {};
 			for (const widget of Object.values(bonhomme.widgets))
 				widgets.update(client, widget);
 			client.nbApps = Object.keys(bonhomme.widgets).length;
-		}).catch(function(err) {
-			client.widgets = {};
-			client.nbApps = 0;
-			console.log("spa normal");
+			console.log(`[+] New user connected via socket.io : ${client.username}`);
 		});
-
 	});
 
 	client.on('updateAll', function() {
@@ -79,6 +105,7 @@ io.on('connection', function(client) {
 	});
 
 	client.on('serialize', function(serialized) {
+		// Update widgets
 		for (const datas of serialized) {
 			var widget = client.widgets[datas.id];
 			widget.posX = datas.posX;
@@ -86,19 +113,28 @@ io.on('connection', function(client) {
 			widget.sizeX = datas.sizeX;
 			widget.sizeY = datas.sizeY;
 		};
-		console.log(client.username);
-		UserSchema.findOne({"local.username": client.username}).then(function(bonhomme) {
-			bonhomme.widgets = client.widgets;
-			for (const widget of Object.values(client.widgets))
-				bonhomme.widgets[widget.id].timer = undefined;
-			console.log(bonhomme);
-			bonhomme.markModified("widgets");
-			return bonhomme.save();
-		}).then(function(datas) {
-			console.log("save");
-		}).catch(function(err) {
-			console.log("spa normal");
-		});
+
+		saveWidgetsOnDatabase(client);
+	});
+
+	client.on('removeWidgetByID', function(widgetID) {
+		if (client.widgets[widgetID]) {
+			console.log(client.widgets[widgetID]);
+			clearInterval(client.widgets[widgetID].timer);
+			client.emit('removeWidget', widgetID);
+			delete client.widgets[widgetID];
+			console.log(` - User ${client.username} remove widget ${widgetID}`);
+			saveWidgetsOnDatabase(client);
+		};
+	});
+
+	client.on('disconnect', function() {
+		console.log(`[-] User ${client.username} disconnected from socket.io`);
+		// for (const widget of Object.values(client.widgets)) {
+		// 	clearInterval(widget.timer);
+		// };
+
+		// FAIRE PAREIL QUAND ON UTILISE LE BOUTON DISCONNECT
 	});
 
 	// WIDGETS BASICS CONFIGURATIONS
@@ -122,9 +158,9 @@ io.on('connection', function(client) {
 		if (widgetConfig.other.country) {
 			client.nbApps += 1;
 			widgets.weather(client, widgetConfig);
+			console.log(` + User ${client.username} add widget ${widgetConfig.id}`);
 		} else
-			console.log("weather: missing country");
-		// else YA UNE ERREUR
+			console.log("weather add: missing country");
 	});
 
 	client.on('updateWeather', function(config) {
@@ -137,23 +173,9 @@ io.on('connection', function(client) {
 		if (widgetConfig.other.countryCode)
 			widgets.update(client, widgetConfig);
 		else
-		console.log("weather: missing country");
-		// else YA UNE ERREUR
+			console.log("weather update: missing country");
 	});
 
-	client.on('removeWidgetByID', function(widgetID) {
-		if (client.widgets[widgetID]) {
-			clearInterval(client.widgets[widgetID].timer);
-			client.emit('removeWidget', widgetID);
-			delete client.widgets[widgetID];
-		};
-	});
-
-	client.on('disconnect', function() {
-		// for (const widget of Object.values(client.widgets)) {
-		// 	clearInterval(widget.timer);
-		// };
-	});
 });
 
 // Export functions and objects

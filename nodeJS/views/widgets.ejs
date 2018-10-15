@@ -2,15 +2,18 @@
 
 <h1> Bonjour <%= username %> </h1>
 
-<form id='add-weather'>
-    <input id="input-weather-city" list="weatherCities" placeholder="City ...">
-    <input id="input-weather-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
+<form id='add-weather' class="form-inline">
+    <div class="row">
+        <div class="col"> <input class="form-control" id="input-weather-city" list="weatherCities" placeholder="City ..."> </div>
+        <div class="col"> <input class="form-control" id="input-weather-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10"> </div>
+        <div class="col"> <button class="btn btn-action"> Add weather widget </button> </div>
+    </div>
+
     <datalist id='weatherCities'>
         <% for(var i = 0 ; i < citiesList.length ; i++) { %>
             <option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>
         <% } %>
     </datalist>
-    <button class="btn btn-action"> Add weather widget </button>
 </form>
 
 <button id="btn-update" class="btn btn-action"> Update widgets </button>

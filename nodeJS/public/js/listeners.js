@@ -13,9 +13,15 @@ function serializeGridster(socket) {
     socket.emit("serialize", widgets);
 };
 
+function getCookie (name) {
+    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+};
+
 function addListeners(socket, id) {
     $('#setting_' + id).click(function() {
         $(`#weatherSettings_${id}`).toggle();
+        $(`#widget_${id}`).toggle();
     });
 
     $(`#weatherSettings_${id}`).submit(function(e) {
@@ -37,7 +43,3 @@ function addListeners(socket, id) {
     });
 };
 
-function getCookie (name) {
-    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) return match[2];
-};
