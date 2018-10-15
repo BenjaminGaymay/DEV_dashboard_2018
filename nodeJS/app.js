@@ -60,9 +60,10 @@ io.on('connection', function(client) {
 	client.on('join', function(username) {
 		UserSchema.findOne({"local.username": username}).then(function(bonhomme) {
 			client.username = username;
-			client.widgets = {}; // recupérer les objets du bonhomme
-			widgets.initializeTimer(client);
-			client.nbApps = Object.keys(client.widgets).length;
+			client.widgets = {};
+			for (const widget of Object.values(bonhomme.widgets))
+				widgets.update(client, widget);
+			client.nbApps = Object.keys(bonhomme.widgets).length;
 		}).catch(function(err) {
 			client.widgets = {};
 			client.nbApps = 0;
@@ -85,8 +86,16 @@ io.on('connection', function(client) {
 			widget.sizeX = datas.sizeX;
 			widget.sizeY = datas.sizeY;
 		};
+		console.log(client.username);
 		UserSchema.findOne({"local.username": client.username}).then(function(bonhomme) {
-			// faut sauvegarder client.widgets
+			bonhomme.widgets = client.widgets;
+			for (const widget of Object.values(client.widgets))
+				bonhomme.widgets[widget.id].timer = undefined;
+			console.log(bonhomme);
+			bonhomme.markModified("widgets");
+			return bonhomme.save();
+		}).then(function(datas) {
+			console.log("save");
 		}).catch(function(err) {
 			console.log("spa normal");
 		});
