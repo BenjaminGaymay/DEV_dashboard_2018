@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito:300,400,600');
 @import './bootstrap/bootstrap.scss';
 
+html {
+    min-height: 100%;
+    position: relative;
+}
+
 .login-container,
 .register-container {
     margin-top: 150px;
@@ -78,5 +83,6 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    color: white;
+    // height: 60px;
+    line-height: 60px;
 }

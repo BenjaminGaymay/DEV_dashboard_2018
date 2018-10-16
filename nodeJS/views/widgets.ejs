@@ -1,4 +1,24 @@
-<h1> WIDGETS </h1>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-sm-6 offset-sm-3 text-center">
+            <h1 class="display-3">Vos widgets</h1>
+        </div>
+        <div class="col-12">
+            <div class="jumbotron">
+                <form id="add-weather" class="text-center">
+                    <input id="input-weather-city" list="weatherCities" placeholder="City ...">
+                    <input id="input-weather-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
+                    <button class="btn btn-action"> Add weather widget </button>
+                    <datalist id='weatherCities'>
+                        <% for(var i = 0 ; i < citiesList.length ; i++) { %>
+                            <option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>
+                        <% } %>
+                    </datalist>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <h1> Bonjour <%= username %> </h1>
 
