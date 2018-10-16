@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito:300,400,600');
 @import './bootstrap/bootstrap.scss';
+@import './footer.scss';
 
 html {
     min-height: 100%;
@@ -77,12 +78,4 @@ html {
         font-size: 2rem;
         text-align: center;
     }
-}
-
-.page-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    // height: 60px;
-    line-height: 60px;
 }

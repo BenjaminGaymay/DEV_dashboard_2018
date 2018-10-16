@@ -4,6 +4,7 @@ const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
 
 const cssFiles = {
+    watch: './scss/**/*.scss',
     in: './scss/main.scss',
     dir: './public/css',
     file: 'style.css',
@@ -20,4 +21,4 @@ gulp.task('sass', () =>
         .pipe(gulp.dest(cssFiles.dir))
 );
 
-gulp.task('sass:watch', () => gulp.watch(cssFiles.in, gulp.series('sass')));
+gulp.task('sass:watch', () => gulp.watch(cssFiles.watch, gulp.series('sass')));
