@@ -119,7 +119,6 @@ io.on('connection', function(client) {
 
 	client.on('removeWidgetByID', function(widgetID) {
 		if (client.widgets[widgetID]) {
-			console.log(client.widgets[widgetID]);
 			clearInterval(client.widgets[widgetID].timer);
 			client.emit('removeWidget', widgetID);
 			delete client.widgets[widgetID];
@@ -129,12 +128,11 @@ io.on('connection', function(client) {
 	});
 
 	client.on('disconnect', function() {
-		console.log(`[-] User ${client.username} disconnected from socket.io`);
-		// for (const widget of Object.values(client.widgets)) {
-		// 	clearInterval(widget.timer);
-		// };
+		for (const widget of Object.values(client.widgets)) {
+			clearInterval(widget.timer);
+		};
 
-		// FAIRE PAREIL QUAND ON UTILISE LE BOUTON DISCONNECT
+		console.log(`[-] User ${client.username} disconnected from socket.io`);
 	});
 
 	// WIDGETS BASICS CONFIGURATIONS

@@ -14,7 +14,11 @@
 
     $('#btn-serialize').click(function() {
         serializeGridster(socket);
-    });
+	});
+
+	$('#btn-logout').click(function() {
+		serializeGridster(socket);
+	});
 
 	socket.on('addWidget', function(widget) {
 		gridster.add_widget('<li id="' + widget.id + '">' + widget.content + '</li>', widget.sizeX, widget.sizeY);
@@ -31,7 +35,7 @@
 	socket.on('updateWidget', function(widget) {
 		if (!$(`#weatherSettings_${widget.id}`).is(':visible')) {
 			$(`#${widget.id}`).html(widget.content);
-			$(`#${widget.id}`).append("<span class='gs-resize-handle gs-resize-handle-both'></span>");
+			// $(`#${widget.id}`).append("<span class='gs-resize-handle gs-resize-handle-both'></span>");
 			addListeners(socket, widget.id);
 		};
 	});

@@ -11,8 +11,11 @@ function resetTimer(client, widget) {
 
 function timer(client, widget) {
 	widget.timer = setInterval(function() {
-		update(client, widget);
-		console.log(' * Widget update: '+ widget.id + " (every " +  widget.interval + "s)");
+		if (client.widgets[widget.id]) {
+			update(client, widget);
+			console.log(' * Widget update: '+ widget.id + " (every " +  widget.interval + "s)");
+		} else
+			clearInterval(this);
 	}, widget.interval * 1000);
 };
 
