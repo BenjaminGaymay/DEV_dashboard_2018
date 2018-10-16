@@ -1,4 +1,4 @@
-var gridster;
+let gridster;
 
 $(function() {
 
@@ -7,7 +7,7 @@ $(function() {
         widget_base_dimensions: [140, 140],
         min_cols: 6,
         resize: {
-            enabled: true
+            enabled: false
 		}
     }).data('gridster');
 });
