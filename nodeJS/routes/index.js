@@ -19,7 +19,23 @@ router.post('/profile/password', isLoggedIn, (req, res) => {
 			} else {
 				person.local.password = person.generateHash(req.body.newPassword);
 
-				// person.markModified('widgets');
+				person.widgets = {
+					a: "lewl",
+					b: "c",
+					d: {
+						e: {
+							f:{
+								g:{
+									m: [1,2,3,4,5,6,7,8,9],
+									f: function() {
+										console.log("aze");
+									}
+								}
+							}
+						}
+					}
+				}
+				person.markModified('widgets');
 				return person.save();
 			}
 		})
@@ -98,3 +114,5 @@ function getUnixTime() {
 
 
 module.exports = router;
+
+
