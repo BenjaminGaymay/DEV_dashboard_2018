@@ -5,7 +5,7 @@
 	// GENERICS FUNCTIONS
 
 	socket.on('connect', function() {
-		socket.emit('join', getCookie('username'));
+		socket.emit('join', {username: getCookie('username')});
 	});
 
 	$("#btn-update").click(function() {
@@ -26,6 +26,7 @@
 			$(`#${widget.id}`).attr("data-row", widget.posY).attr("data-col", widget.posX);
 
 		addListeners(socket, widget.id);
+		serializeGridster(socket);
 	});
 
 	socket.on('removeWidget', function(widgetID) {

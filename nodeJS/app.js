@@ -80,22 +80,22 @@ const io = require('socket.io')(server);
 // Define socket.io listeners
 
 io.on('connection', function(client) {
+	// Initialize new user
+	client.widgets = {};
+	client.nbApps = 0;
 
 	// GENERICS FUNCTIONS
 
-	client.on('join', function(username) {
-		// Initialize new user
-		client.widgets = {};
-		client.nbApps = 0;
+	client.on('join', function(datas) {
 
-		UserSchema.findOne({"local.username": username}).then(function(bonhomme) {
-			client.username = bonhomme.local.username;
+		UserSchema.findOne({"local.username": datas.username}).then(function(bonhomme) {
+			client.username = datas.username;
 			client.widgets = {};
 			for (const widget of Object.values(bonhomme.widgets))
 				widgets.update(client, widget);
 			client.nbApps = Object.keys(bonhomme.widgets).length;
 			console.log(`[+] New user connected via socket.io : ${client.username}`);
-		});
+		}).catch(err => console.log("ERROR"));
 	});
 
 	client.on('updateAll', function() {
@@ -128,9 +128,10 @@ io.on('connection', function(client) {
 	});
 
 	client.on('disconnect', function() {
-		for (const widget of Object.values(client.widgets)) {
-			clearInterval(widget.timer);
-		};
+		if (client && client.saveWidgetsOnDatabase)
+			for (const widget of Object.values(client.widgets)) {
+				clearInterval(widget.timer);
+			};
 
 		console.log(`[-] User ${client.username} disconnected from socket.io`);
 	});

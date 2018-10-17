@@ -13,9 +13,10 @@ function serializeGridster(socket) {
     socket.emit("serialize", widgets);
 };
 
-function getCookie (name) {
-    var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) return match[2];
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
 };
 
 function addListeners(socket, id) {
