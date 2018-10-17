@@ -88,6 +88,8 @@ io.on('connection', function(client) {
 
 	client.on('join', function(datas) {
 
+		if (!datas)
+			return;
 		UserSchema.findOne({"local.username": datas.username}).then(function(bonhomme) {
 			client.username = datas.username;
 			client.widgets = {};
@@ -95,7 +97,7 @@ io.on('connection', function(client) {
 				widgets.update(client, widget);
 			client.nbApps = Object.keys(bonhomme.widgets).length;
 			console.log(`[+] New user connected via socket.io : ${client.username}`);
-		}).catch(err => console.log("ERROR"));
+		}).catch(err => console.log("socket.io: link with database failed"));
 	});
 
 	client.on('updateAll', function() {
