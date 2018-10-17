@@ -7,11 +7,37 @@
 		"services": [{
 			"name": "weather",
 			"widgets": [{
-				"name": "city_temperature",
-				"description": "Affichage  de la  temperature  pour  une  ville",
+				"name": "weather widget",
+				"description": "Show temperature for a city",
 				"params": [{
-					"name": "city",
+					"name": "city, country",
 					"type": "string"
+				}, {
+					"interval": "interval between updates",
+					"type": "int"
+				}]
+			}]
+		}, {
+			"name": "radio",
+			"widgets": [{
+				"name": "radio widget",
+				"description": "Play a web radio",
+				"params": [{
+					"name": "Web radio name",
+					"type": "string"
+				}]
+			}]
+		}, {
+			"name": "IMDb",
+			"widgets": [{
+				"name": "IMDb widget",
+				"description": "Show the latest movies in cinemas",
+				"params": [{
+					"language": "language of the titles and descriptions",
+					"type": "string"
+				}, {
+					"interval": "interval between updates",
+					"type": "int"
 				}]
 			}]
 		}]
