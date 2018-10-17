@@ -38,6 +38,7 @@ function update(client, widgetConfig) {
 		case "weather": weather(client, widgetConfig); break;
 		case "radio": radio(client, widgetConfig); break;
 		case "imdb": imdb(client, widgetConfig); break;
+		case "clock": clock(client, widgetConfig); break;
 	};
 };
 
