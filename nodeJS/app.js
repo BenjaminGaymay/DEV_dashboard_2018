@@ -206,6 +206,26 @@ io.on('connection', function(client) {
 			console.log("radio update: missing radio name");
 	});
 
+	client.on('addClockWidget', config => {
+		const widgetConfig = {
+			name: config.name,
+			id: client.nbApps.toString(),
+			type: 'clock',
+			sizeX: '1',
+			sizeY: '2',
+		}
+		if (widgetConfig.name) {
+			client.nbApps += 1;
+			widgets.clock(client, widgetConfig);
+			console.log(` + User ${client.username} add widget ${widgetConfig.id}`);
+		} else
+			console.log("radio add: missing radio name");
+	});
+
+	client.on('updateClockWidget', config => {
+
+	});
+
 });
 
 // Export functions and objects

@@ -1,6 +1,7 @@
 const request = require('request');
 const fs = require('fs');
 const ejs = require('ejs');
+const moment = require('moment-timezone');
 
 // Timer
 
@@ -158,7 +159,31 @@ function radio(client, widgetConfig) {
 	});
 };
 
+// Clock
+const clockList = require('./cities.json');
 
+
+function clock(client, widgetConfig) {
+	const time = moment.tz(widgetConfig.name).format('hh:mm:ss a');
+
+	ejs.renderFile(`${__dirname}/templates/clock.ejs`, {
+		city: widgetConfig.name,
+		time,
+		id: widgetConfig.id
+	}, 'cache', (err, content) => {
+		if (err) console.log(err);
+		const widget = {
+			id: widgetConfig.id,
+			type: widgetConfig.type,
+			content,
+			sizeX: widgetConfig.sizeX,
+			sizeY: widgetConfig.sizeY,
+			posX: widgetConfig.posX ? widgetConfig.posX : undefined,
+			posY: widgetConfig.posY ? widgetConfig.posY : undefined,
+		};
+		sendWidget(client, widgetConfig, widget);
+	});
+}
 
 module.exports = {
 	initializeTimer,
@@ -168,5 +193,7 @@ module.exports = {
 	weatherCities,
 	getCountryCode,
 	radio,
-	radioList
+	radioList,
+	clock,
+	clockList
 };

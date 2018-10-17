@@ -58,6 +58,8 @@ function addListeners(socket, id, type) {
                 $(this).toggle();
             });
             break;
+        case "clock":
+            break;
     };
 };
 
