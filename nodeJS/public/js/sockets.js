@@ -8,6 +8,10 @@
 		socket.emit('join', {username: getCookie('username')});
 	});
 
+	socket.on('reload', function() {
+		window.location.reload();
+	});
+
 	$("#btn-update").click(function() {
 		socket.emit('updateAll');
 	});
@@ -60,6 +64,16 @@
 		const name = $('#input-radio-name').val();
 		socket.emit('addRadioWidget', {
 			name: name
+		});
+	});
+
+	$("#add-imdb").submit(function(e) {
+		e.preventDefault();
+		const lang = $('#input-lang').val();
+		const interval = $('#input-imdb-interval').val();
+		socket.emit('addImdbWidget', {
+			lang: lang,
+			interval: interval
 		});
 	});
 

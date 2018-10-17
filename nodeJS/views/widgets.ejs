@@ -26,6 +26,16 @@
                     </datalist>
                 </form>
 
+                <form id="add-imdb" class="text-center">
+                    <input id="input-lang" list="langList" placeholder="Langue ..." value="fr">
+                    <input id="input-imdb-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
+                    <button class="btn btn-action"> Add IMDb widget </button>
+                    <datalist id='langList'>
+                        <option value="fr">Français</option>
+                        <option value="en">Anglais</option>
+                    </datalist>
+                </form>
+
                 <form id="add-clock" class="text-center">
                     <input id="input-clock-name" list="clockList" placeholder="Horloge ..." value="Paris">
                     <button class="btn btn-action"> Add clock widget </button>
