@@ -177,6 +177,38 @@ io.on('connection', function(client) {
 			console.log("weather update: missing country");
 	});
 
+	// RADIO BASICS CONFIGURATIONS
+
+	client.on('addRadioWidget', function(config) {
+		const widgetConfig = {
+			id: client.nbApps.toString(),
+			type: "radio",
+			sizeX: '2',
+			sizeY: '1',
+			other: {
+				url: config.url
+			}
+		};
+
+		if (widgetConfig.other.url) {
+			client.nbApps += 1;
+			widgets.radio(client, widgetConfig);
+			console.log(` + User ${client.username} add widget ${widgetConfig.id}`);
+		} else
+			console.log("radio add: missing url");
+	});
+
+	client.on('updateRadio', function(config) {
+		var widgetConfig = client.widgets[config.id];
+		widgetConfig.other.url = config.url;
+		widgetConfig.interval = config.interval;
+		widgets.resetTimer(client, widgetConfig);
+		if (widgetConfig.other.url)
+			widgets.update(client, widgetConfig);
+		else
+			console.log("radio update: missing url");
+	});
+
 });
 
 // Export functions and objects

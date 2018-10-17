@@ -10,6 +10,9 @@ function resetTimer(client, widget) {
 };
 
 function timer(client, widget) {
+	if (!widget.interval)
+		return;
+
 	widget.timer = setInterval(function() {
 		if (client.widgets[widget.id]) {
 			update(client, widget);
@@ -30,8 +33,9 @@ function initializeTimer(client) {
 // Basics widgets functions
 
 function update(client, widgetConfig) {
-	if (widgetConfig.type === "weather") {
-		weather(client, widgetConfig);
+	switch (widgetConfig.type) {
+		case "weather": weather(client, widgetConfig); break;
+		case "radio": radio(client, widgetConfig); break;
 	};
 };
 
@@ -99,8 +103,7 @@ function weather(client, widgetConfig) {
 				temp: requestResult.temp,
 				unit: (unit == "M" ? "C" : "F"),
 				icon: weather.icon,
-				description: weather.description,
-				citiesList: weatherCities
+				description: weather.description
 			}, 'cache', function(error, content) {
 				const widget = {
 					id: widgetConfig.id,
@@ -117,11 +120,35 @@ function weather(client, widgetConfig) {
 };
 
 
+// Radio
+
+function radio(client, widgetConfig) {
+
+	ejs.renderFile(__dirname + "/templates/radio.ejs", {
+			id: widgetConfig.id,
+			radio: widgetConfig.other.url
+		}, 'cache', function(error, content) {
+			const widget = {
+				id: widgetConfig.id,
+				content: content,
+				sizeX: widgetConfig.sizeX,
+				sizeY: widgetConfig.sizeY,
+				posX: widgetConfig.posX ? widgetConfig.posX : undefined,
+				posY: widgetConfig.posY ? widgetConfig.posY : undefined
+			};
+
+			sendWidget(client, widgetConfig, widget);
+	});
+};
+
+
+
 module.exports = {
 	initializeTimer,
 	resetTimer,
 	update,
 	weather,
 	weatherCities,
-	getCountryCode
+	getCountryCode,
+	radio
 };

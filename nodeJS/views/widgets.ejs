@@ -6,7 +6,7 @@
         <div class="col-12">
             <div class="jumbotron">
                 <form id="add-weather" class="text-center">
-                    <input id="input-weather-city" list="weatherCities" placeholder="City ...">
+                    <input id="input-weather-city" list="weatherCities" value="Paris, France">
                     <input id="input-weather-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
                     <button class="btn btn-action"> Add weather widget </button>
                     <datalist id='weatherCities'>
@@ -14,14 +14,20 @@
                             <option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>
                         <% } %>
                     </datalist>
-                    <button id="btn-update" class="btn btn-action"> Update widgets </button>
-                    <button id="btn-serialize" class="btn btn-action"> Save widgets </button>
-
-                    <div class="gridster ready" id="widgetsArray">
-                        <ul>
-                        </ul>
-                    </div>
                 </form>
+
+                <form id="add-radio" class="text-center">
+                    <input id="input-radio-url" placeholder="Radio URL ..." value="http://streaming.radio.rtl.fr/rtl-1-44-96">
+                    <button class="btn btn-action"> Add radio widget </button>
+                </form>
+
+                <button id="btn-update" class="btn btn-action"> Update widgets </button>
+                <button id="btn-serialize" class="btn btn-action"> Save widgets </button>
+            </div>
+
+            <div class="gridster ready" id="widgetsArray">
+                <ul>
+                </ul>
             </div>
         </div>
     </div>

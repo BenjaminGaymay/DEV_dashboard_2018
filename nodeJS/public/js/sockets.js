@@ -55,4 +55,12 @@
 		});
 	});
 
+	$("#add-radio").submit(function(e) {
+		e.preventDefault();
+		const url = $('#input-radio-url').val();
+		socket.emit('addRadioWidget', {
+			url: url
+		});
+	});
+
 }());
