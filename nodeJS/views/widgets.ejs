@@ -17,8 +17,13 @@
                 </form>
 
                 <form id="add-radio" class="text-center">
-                    <input id="input-radio-url" placeholder="Radio URL ..." value="http://streaming.radio.rtl.fr/rtl-1-44-96">
+                    <input id="input-radio-name" list="radioList" placeholder="Radio ..." value="Radio Classique">
                     <button class="btn btn-action"> Add radio widget </button>
+                    <datalist id='radioList'>
+                        <% for(var i = 0 ; i < radioList.length ; i++) { %>
+                            <option value="<%= radioList[i] %>"><%= radioList[i] %></option>
+                        <% } %>
+                    </datalist>
                 </form>
 
                 <button id="btn-update" class="btn btn-action"> Update widgets </button>

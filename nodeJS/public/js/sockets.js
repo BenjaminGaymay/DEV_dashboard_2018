@@ -25,7 +25,7 @@
 		if (widget.posY && widget.posX)
 			$(`#${widget.id}`).attr("data-row", widget.posY).attr("data-col", widget.posX);
 
-		addListeners(socket, widget.id);
+		addListeners(socket, widget.id, widget.type);
 		serializeGridster(socket);
 	});
 
@@ -34,10 +34,10 @@
 	});
 
 	socket.on('updateWidget', function(widget) {
-		if (!$(`#weatherSettings_${widget.id}`).is(':visible')) {
+		if (!$(`#widgetSettings_${widget.id}`).is(':visible')) {
 			$(`#${widget.id}`).html(widget.content);
 			// $(`#${widget.id}`).append("<span class='gs-resize-handle gs-resize-handle-both'></span>");
-			addListeners(socket, widget.id);
+			addListeners(socket, widget.id, widget.type);
 		};
 	});
 
@@ -57,9 +57,9 @@
 
 	$("#add-radio").submit(function(e) {
 		e.preventDefault();
-		const url = $('#input-radio-url').val();
+		const name = $('#input-radio-name').val();
 		socket.emit('addRadioWidget', {
-			url: url
+			name: name
 		});
 	});
 

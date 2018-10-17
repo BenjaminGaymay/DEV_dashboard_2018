@@ -183,30 +183,28 @@ io.on('connection', function(client) {
 		const widgetConfig = {
 			id: client.nbApps.toString(),
 			type: "radio",
-			sizeX: '2',
+			sizeX: '4',
 			sizeY: '1',
 			other: {
-				url: config.url
+				name: config.name
 			}
 		};
 
-		if (widgetConfig.other.url) {
+		if (widgetConfig.other.name) {
 			client.nbApps += 1;
 			widgets.radio(client, widgetConfig);
 			console.log(` + User ${client.username} add widget ${widgetConfig.id}`);
 		} else
-			console.log("radio add: missing url");
+			console.log("radio add: missing radio name");
 	});
 
-	client.on('updateRadio', function(config) {
+	client.on('updateRadioWidget', function(config) {
 		var widgetConfig = client.widgets[config.id];
-		widgetConfig.other.url = config.url;
-		widgetConfig.interval = config.interval;
-		widgets.resetTimer(client, widgetConfig);
-		if (widgetConfig.other.url)
+		widgetConfig.other.name = config.name;
+		if (widgetConfig.other.name)
 			widgets.update(client, widgetConfig);
 		else
-			console.log("radio update: missing url");
+			console.log("radio update: missing radio name");
 	});
 
 });

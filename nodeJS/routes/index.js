@@ -18,24 +18,6 @@ router.post('/profile/password', isLoggedIn, (req, res) => {
 				throw Error('Les nouveaux mots de passe doivent être identiques !')
 			} else {
 				person.local.password = person.generateHash(req.body.newPassword);
-
-				person.widgets = {
-					a: "lewl",
-					b: "c",
-					d: {
-						e: {
-							f:{
-								g:{
-									m: [1,2,3,4,5,6,7,8,9],
-									f: function() {
-										console.log("aze");
-									}
-								}
-							}
-						}
-					}
-				}
-				person.markModified('widgets');
 				return person.save();
 			}
 		})
@@ -88,6 +70,7 @@ router.get('/widgets', isLoggedIn ,(req, res) => {
 	res.render('widgets', {
 		citiesList: widgets.weatherCities,
 		username: req.user.local.username,
+		radioList: widgets.radioList,
 		socket: true
 	});
 });

@@ -107,6 +107,7 @@ function weather(client, widgetConfig) {
 			}, 'cache', function(error, content) {
 				const widget = {
 					id: widgetConfig.id,
+					type: widgetConfig.type,
 					content: content,
 					sizeX: widgetConfig.sizeX,
 					sizeY: widgetConfig.sizeY,
@@ -122,14 +123,30 @@ function weather(client, widgetConfig) {
 
 // Radio
 
-function radio(client, widgetConfig) {
+const radios = JSON.parse(fs.readFileSync(__dirname + "/radios.json", 'utf-8'));
+var radioList = [];
 
+for (const radioTmp of radios)
+	radioList.push(radioTmp.name);
+
+function getRadioUrl(name) {
+	for (const tmp of radios) {
+		if (tmp.name == name)
+			return tmp.url;
+	};
+	return undefined
+};
+
+function radio(client, widgetConfig) {
+	widgetConfig.other.url = getRadioUrl(widgetConfig.other.name);
 	ejs.renderFile(__dirname + "/templates/radio.ejs", {
 			id: widgetConfig.id,
-			radio: widgetConfig.other.url
+			radioName: widgetConfig.other.name,
+			radioURL: widgetConfig.other.url
 		}, 'cache', function(error, content) {
 			const widget = {
 				id: widgetConfig.id,
+				type: widgetConfig.type,
 				content: content,
 				sizeX: widgetConfig.sizeX,
 				sizeY: widgetConfig.sizeY,
@@ -150,5 +167,6 @@ module.exports = {
 	weather,
 	weatherCities,
 	getCountryCode,
-	radio
+	radio,
+	radioList
 };
