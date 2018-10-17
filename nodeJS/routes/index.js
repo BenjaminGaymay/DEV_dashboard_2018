@@ -4,7 +4,7 @@ const widgets = require('../widgets/widgets');
 const UserSchema = require('./models/user');
 
 router.get('/', (req, res, next) => {
-	res.render('index');
+	res.render('index', { layout: 'layout/home.ejs' });
 });
 
 router.get('/profile', isLoggedIn, (req, res) => {

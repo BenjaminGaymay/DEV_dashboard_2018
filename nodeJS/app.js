@@ -87,7 +87,6 @@ io.on('connection', function(client) {
 	// GENERICS FUNCTIONS
 
 	client.on('join', function(datas) {
-
 		if (!datas)
 			return;
 		UserSchema.findOne({"local.username": datas.username}).then(function(bonhomme) {
