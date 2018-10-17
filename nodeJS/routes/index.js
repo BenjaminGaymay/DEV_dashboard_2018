@@ -4,7 +4,7 @@ const widgets = require('../widgets/widgets');
 const UserSchema = require('./models/user');
 
 router.get('/', (req, res, next) => {
-	res.render('index');
+	res.render('index', { layout: 'layout/home.ejs' });
 });
 
 router.get('/profile', isLoggedIn, (req, res) => {
@@ -67,10 +67,12 @@ router.get('/logout', (req, res) => {
 
 router.get('/widgets', isLoggedIn ,(req, res) => {
 	res.cookie('username', req.user.local.username, {maxAge: 1000, httpOnly: false});
+
 	res.render('widgets', {
 		citiesList: widgets.weatherCities,
 		username: req.user.local.username,
 		radioList: widgets.radioList,
+		cities: widgets.clockList,
 		socket: true
 	});
 });

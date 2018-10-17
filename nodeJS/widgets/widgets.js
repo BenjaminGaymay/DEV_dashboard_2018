@@ -1,6 +1,7 @@
 const request = require('request');
 const fs = require('fs');
 const ejs = require('ejs');
+const moment = require('moment-timezone');
 
 // Timer
 
@@ -37,6 +38,7 @@ function update(client, widgetConfig) {
 		case "weather": weather(client, widgetConfig); break;
 		case "radio": radio(client, widgetConfig); break;
 		case "imdb": imdb(client, widgetConfig); break;
+		case "clock": clock(client, widgetConfig); break;
 	};
 };
 
@@ -160,6 +162,8 @@ function radio(client, widgetConfig) {
 	});
 };
 
+// Clock
+const clockList = require('./cities.json');
 
 // IMDb widget
 
@@ -199,6 +203,28 @@ function imdb(client, widgetConfig) {
 	});
 };
 
+function clock(client, widgetConfig) {
+	const time = moment.tz(widgetConfig.name).format('hh:mm:ss a');
+
+	ejs.renderFile(`${__dirname}/templates/clock.ejs`, {
+		city: widgetConfig.name,
+		time,
+		id: widgetConfig.id
+	}, 'cache', (err, content) => {
+		if (err) console.log(err);
+		const widget = {
+			id: widgetConfig.id,
+			type: widgetConfig.type,
+			content,
+			sizeX: widgetConfig.sizeX,
+			sizeY: widgetConfig.sizeY,
+			posX: widgetConfig.posX ? widgetConfig.posX : undefined,
+			posY: widgetConfig.posY ? widgetConfig.posY : undefined,
+		};
+		sendWidget(client, widgetConfig, widget);
+	});
+}
+
 module.exports = {
 	initializeTimer,
 	resetTimer,
@@ -208,5 +234,7 @@ module.exports = {
 	getCountryCode,
 	radio,
 	radioList,
-	imdb
+	imdb,
+	clock,
+	clockList
 };

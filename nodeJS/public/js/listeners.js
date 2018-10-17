@@ -56,6 +56,8 @@ function addListeners(socket, id, type) {
                 $(this).toggle();
             });
             break;
+        case "clock":
+            break;
         case "imdb":
             $(`#widgetSettings_${id}`).submit(function(e) {
                 e.preventDefault();

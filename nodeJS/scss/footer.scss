@@ -1,14 +1,19 @@
 html,
 body {
     height: 100%;
-    width: 100%;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
+.footer {
+    // position: absolute;
+    // width: 100%;
+    // bottom: -200px;
+    // height: 200px;
+    // left: 0;
+    // right: 0;
 }
 
 main {
-    flex-grow: 1;
+    min-height:100%;
+    margin:0 auto;
+    position:relative;
 }

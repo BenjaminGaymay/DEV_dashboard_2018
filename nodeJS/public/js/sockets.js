@@ -77,4 +77,11 @@
 		});
 	});
 
+	$('#add-clock').submit(function(e) {
+		e.preventDefault();
+		const name = $('#input-clock-name').val();
+		socket.emit('addClockWidget', {
+			name
+		});
+	});
 }());

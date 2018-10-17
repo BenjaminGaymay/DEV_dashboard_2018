@@ -1,0 +1,30 @@
+
+.hero {
+    min-height: 100vh;
+    background-image: url('/images/blur_city.jpeg');
+    background-size: cover;
+    padding-top: 100px;
+    display: flex;
+    align-items: center;
+    .hero-title {
+        padding: 20px;
+        // background: rgba(0, 0, 0, 0.5);
+        .hero-subtitle {
+            padding: 30px 20px;
+            color: white;
+            p {
+                color: #AAA;
+            }
+        }
+        h1 {
+            font-family: 'Muli';
+            color: white;
+        }
+    }
+
+}
+
+
+#transparent-navbar {
+    background-color: transparent !important;
+}
