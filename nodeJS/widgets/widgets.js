@@ -10,11 +10,11 @@ function resetTimer(client, widget) {
 };
 
 function timer(client, widget) {
-	if (!widget.interval)
+	if (!widget.interval || !client.widgets[widget.id])
 		return;
 
-	widget.timer = setInterval(function() {
-		if (client.widgets[widget.id]) {
+	client.widgets[widget.id].timer = setInterval(function() {
+		if (client.widgets[widget.id] && client.widgets[widget.id].loop) {
 			update(client, widget);
 			console.log(' * Widget update: '+ widget.id + " (every " +  widget.interval + "s)");
 		} else
@@ -36,6 +36,7 @@ function update(client, widgetConfig) {
 	switch (widgetConfig.type) {
 		case "weather": weather(client, widgetConfig); break;
 		case "radio": radio(client, widgetConfig); break;
+		case "imdb": imdb(client, widgetConfig); break;
 	};
 };
 
@@ -45,6 +46,7 @@ function sendWidget(client, widgetConfig, widget) {
 			client.emit('updateWidget', widget);
 	} else {
 		client.widgets[widget.id] = widgetConfig;
+		client.widgets[widget.id].loop = client.widgets[widget.id].interval ? true : false;
 		client.emit('addWidget', widget);
 		timer(client, widgetConfig);
 	};
@@ -159,6 +161,43 @@ function radio(client, widgetConfig) {
 };
 
 
+// IMDb widget
+
+function imdb(client, widgetConfig) {
+
+	request('http://api.themoviedb.org/3/movie/upcoming?page=1&api_key=8e0abe397ffd3af9ac5d115c0f815c2c&language=' + widgetConfig.other.lang, function(err, resp, body) {
+		const response = JSON.parse(body).results;
+		var filmList = [];
+
+		for (const film of response) {
+			filmList.push({
+				title: film.title,
+				image: "http://image.tmdb.org/t/p/w200" + film.poster_path,
+				description: film.overview,
+				id: film.id
+			});
+		};
+
+		ejs.renderFile(__dirname + "/templates/imdb.ejs", {
+				id: widgetConfig.id,
+				interval: widgetConfig.interval,
+				lang: widgetConfig.other.lang,
+				films: filmList
+			}, 'cache', function(error, content) {
+				const widget = {
+					id: widgetConfig.id,
+					type: widgetConfig.type,
+					content: content,
+					sizeX: widgetConfig.sizeX,
+					sizeY: widgetConfig.sizeY,
+					posX: widgetConfig.posX ? widgetConfig.posX : undefined,
+					posY: widgetConfig.posY ? widgetConfig.posY : undefined
+				};
+
+				sendWidget(client, widgetConfig, widget);
+		});
+	});
+};
 
 module.exports = {
 	initializeTimer,
@@ -168,5 +207,6 @@ module.exports = {
 	weatherCities,
 	getCountryCode,
 	radio,
-	radioList
+	radioList,
+	imdb
 };

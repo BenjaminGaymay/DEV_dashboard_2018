@@ -29,8 +29,6 @@ function addListeners(socket, id, type) {
         socket.emit('removeWidgetByID', id);
     });
 
-    console.log(type);
-
     switch (type) {
         case "weather":
             $(`#widgetSettings_${id}`).submit(function(e) {
@@ -56,6 +54,21 @@ function addListeners(socket, id, type) {
                     id: id
                 });
                 $(this).toggle();
+            });
+            break;
+        case "imdb":
+            $(`#widgetSettings_${id}`).submit(function(e) {
+                e.preventDefault();
+                const lang = $(`#input-update-lang_${id}`).val();
+                socket.emit('updateImdbWidget', {
+                    lang: lang,
+                    id: id
+                });
+                $(this).toggle();
+            });
+
+            $('.modal-dialog').parent().on('show.bs.modal', function(e) {
+                $(e.relatedTarget.attributes['data-target'].value).appendTo('body');
             });
             break;
     };

@@ -97,7 +97,10 @@ io.on('connection', function(client) {
 				widgets.update(client, widget);
 			client.nbApps = Object.keys(bonhomme.widgets).length;
 			console.log(`[+] New user connected via socket.io : ${client.username}`);
-		}).catch(err => console.log("socket.io: link with database failed"));
+		}).catch(err => {
+			console.log("socket.io: link with database failed")
+			client.emit('reload');
+		});
 	});
 
 	client.on('updateAll', function() {
@@ -130,9 +133,10 @@ io.on('connection', function(client) {
 	});
 
 	client.on('disconnect', function() {
-		if (client && client.saveWidgetsOnDatabase)
-			for (const widget of Object.values(client.widgets)) {
-				clearInterval(widget.timer);
+		if (client && client.widgets)
+			for (var widget of Object.values(client.widgets)) {
+				clearInterval(client.widgets[widget.id].timer);
+				client.widgets[widget.id].loop = false;
 			};
 
 		console.log(`[-] User ${client.username} disconnected from socket.io`);
@@ -205,6 +209,38 @@ io.on('connection', function(client) {
 			widgets.update(client, widgetConfig);
 		else
 			console.log("radio update: missing radio name");
+	});
+
+	// IMDB WIDGET
+
+	client.on('addImdbWidget', function(config) {
+		const widgetConfig = {
+			id: client.nbApps.toString(),
+			type: "imdb",
+			sizeX: '3',
+			sizeY: '4',
+			interval: config.interval,
+			other: {
+				lang: config.lang
+			}
+		};
+
+		if (widgetConfig.other.lang) {
+			client.nbApps += 1;
+			widgets.imdb(client, widgetConfig);
+			console.log(` + User ${client.username} add widget ${widgetConfig.id}`);
+		} else
+			console.log("IMDb add: missing language");
+	});
+
+	client.on('updateImdbWidget', function(config) {
+		var widgetConfig = client.widgets[config.id];
+		widgetConfig.other.lang = config.lang;
+		widgetConfig.interval = config.interval;
+		if (widgetConfig.other.lang)
+			widgets.update(client, widgetConfig);
+		else
+			console.log("IMDb add: missing language");
 	});
 
 });

@@ -26,6 +26,16 @@
                     </datalist>
                 </form>
 
+                <form id="add-imdb" class="text-center">
+                    <input id="input-lang" list="langList" placeholder="Langue ..." value="fr">
+                    <input id="input-imdb-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
+                    <button class="btn btn-action"> Add IMDb widget </button>
+                    <datalist id='langList'>
+                        <option value="fr">Français</option>
+                        <option value="en">Anglais</option>
+                    </datalist>
+                </form>
+
                 <button id="btn-update" class="btn btn-action"> Update widgets </button>
                 <button id="btn-serialize" class="btn btn-action"> Save widgets </button>
             </div>
