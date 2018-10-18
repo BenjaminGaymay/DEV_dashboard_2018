@@ -25,9 +25,13 @@
 	});
 
 	socket.on('addWidget', function(widget) {
-		gridster.add_widget('<li id="' + widget.id + '">' + widget.content + '</li>', widget.sizeX, widget.sizeY);
+		gridster.add_widget('<li id="' + widget.id + '"></li>', widget.sizeX, widget.sizeY);
 		if (widget.posY && widget.posX)
 			$(`#${widget.id}`).attr("data-row", widget.posY).attr("data-col", widget.posX);
+		$(`#${widget.id}`).html(widget.content);
+		if (widget.resizable)
+			$(`#${widget.id}`).append(`<span class='gs-resize-handle gs-resize-handle-both' id='resize_${widget.id}' style='display: none;'></span>`);
+
 
 		addListeners(socket, widget.id, widget.type);
 		serializeGridster(socket);
@@ -40,7 +44,8 @@
 	socket.on('updateWidget', function(widget) {
 		if (!$(`#widgetSettings_${widget.id}`).is(':visible')) {
 			$(`#${widget.id}`).html(widget.content);
-			// $(`#${widget.id}`).append("<span class='gs-resize-handle gs-resize-handle-both'></span>");
+			if (widget.resizable)
+				$(`#${widget.id}`).append(`<span class='gs-resize-handle gs-resize-handle-both' id='resize_${widget.id}' style='display: none;'></span>`);
 			addListeners(socket, widget.id, widget.type);
 		};
 	});
@@ -73,6 +78,14 @@
 		const interval = $('#input-imdb-interval').val();
 		socket.emit('addImdbWidget', {
 			lang: lang,
+			interval: interval
+		});
+	});
+
+	$("#add-photo").submit(function(e) {
+		e.preventDefault();
+		const interval = $('#input-photo-interval').val();
+		socket.emit('addPhotoWidget', {
 			interval: interval
 		});
 	});

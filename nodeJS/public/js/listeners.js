@@ -23,6 +23,8 @@ function addListeners(socket, id, type) {
     $('#setting_' + id).click(function() {
         $(`#widgetSettings_${id}`).toggle();
         $(`#widget_${id}`).toggle();
+        if ($(`#resize_${id}`))
+            $(`#resize_${id}`).toggle();
     });
 
     $(`#delete_${id}`).click(function() {
@@ -69,6 +71,21 @@ function addListeners(socket, id, type) {
 
             $('.modal-dialog').parent().on('show.bs.modal', function(e) {
                 $(e.relatedTarget.attributes['data-target'].value).appendTo('body');
+            });
+            break;
+        case "photo":
+            $(`#widgetSettings_${id}`).submit(function(e) {
+                e.preventDefault();
+                const id = $(this).parent().attr('id');
+                const interval = $(`#input-update-interval_${id}`).val();
+                socket.emit('updatePhotoWidget', {
+                    interval: interval,
+                    id: id,
+                    sizeX: $(`#${id}`).attr("data-sizex"),
+                    sizeY: $(`#${id}`).attr("data-sizey")
+                });
+                $(this).toggle();
+                $(`#resize_${id}`).toggle();
             });
             break;
     };
