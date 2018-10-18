@@ -284,7 +284,12 @@ io.on('connection', function(client) {
 	});
 
 	client.on('updateClockWidget', config => {
-
+		client.widgets[config.id].name = config.name;
+		clearTimeout(client.widgets[config.id].timer);
+		if (client.widgets[config.id].name)
+			widgets.update(client, client.widgets[config.id]);
+		else
+			console.log("IMDb add: missing language");
 	});
 
 });

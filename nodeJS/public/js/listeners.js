@@ -59,6 +59,15 @@ function addListeners(socket, id, type) {
             });
             break;
         case "clock":
+            $(`#widgetSettings_${id}`).submit(function(e) {
+                e.preventDefault();
+                const name = $(`#input-update-clock_${id}`).val();
+                socket.emit('updateClockWidget', {
+                    name,
+                    id,
+                });
+                $(this).toggle();
+            });
             break;
         case "imdb":
             $(`#widgetSettings_${id}`).submit(function(e) {
@@ -93,3 +102,13 @@ function addListeners(socket, id, type) {
     };
 };
 
+function updateTime() {
+    $(document).on('click', '.clock-display', e => {
+        console.log("loaze");
+    });
+    $(document).on('change', '.gridster .ready', e => {
+        console.log("wat??");
+    });
+}
+
+// updateTime();
