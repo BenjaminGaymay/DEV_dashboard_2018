@@ -27,13 +27,18 @@
                 </form>
 
                 <form id="add-imdb" class="text-center">
-                    <input id="input-lang" list="langList" placeholder="Langue ..." value="fr">
-                    <input id="input-imdb-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
+                    <input id="input-lang" list="langList" placeholder="Langue ..." value="Français">
+                    <input id="input-imdb-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="60">
                     <button class="btn btn-action"> Add IMDb widget </button>
                     <datalist id='langList'>
-                        <option value="fr">Français</option>
-                        <option value="en">Anglais</option>
+                        <option value="Français">Français</option>
+                        <option value="English">English</option>
                     </datalist>
+                </form>
+
+                <form id="add-photo" class="text-center">
+                    <input id="input-photo-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="30">
+                    <button class="btn btn-action"> Add photos widget </button>
                 </form>
 
                 <form id="add-clock" class="text-center">

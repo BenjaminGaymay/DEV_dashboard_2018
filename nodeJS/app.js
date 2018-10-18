@@ -92,9 +92,11 @@ io.on('connection', function(client) {
 		UserSchema.findOne({"local.username": datas.username}).then(function(bonhomme) {
 			client.username = datas.username;
 			client.widgets = {};
-			for (const widget of Object.values(bonhomme.widgets))
-				widgets.update(client, widget);
-			client.nbApps = Object.keys(bonhomme.widgets).length;
+			if (bonhomme.widgets) {
+				for (const widget of Object.values(bonhomme.widgets))
+					widgets.update(client, widget);
+				client.nbApps = Object.keys(bonhomme.widgets).length;
+			};
 			console.log(`[+] New user connected via socket.io : ${client.username}`);
 		}).catch(err => {
 			console.log("socket.io: link with database failed")
@@ -123,7 +125,7 @@ io.on('connection', function(client) {
 
 	client.on('removeWidgetByID', function(widgetID) {
 		if (client.widgets[widgetID]) {
-			clearInterval(client.widgets[widgetID].timer);
+			clearTimeout(client.widgets[widgetID].timer);
 			client.emit('removeWidget', widgetID);
 			delete client.widgets[widgetID];
 			console.log(` - User ${client.username} remove widget ${widgetID}`);
@@ -134,7 +136,7 @@ io.on('connection', function(client) {
 	client.on('disconnect', function() {
 		if (client && client.widgets)
 			for (var widget of Object.values(client.widgets)) {
-				clearInterval(client.widgets[widget.id].timer);
+				clearTimeout(client.widgets[widget.id].timer);
 				client.widgets[widget.id].loop = false;
 			};
 
@@ -168,14 +170,13 @@ io.on('connection', function(client) {
 	});
 
 	client.on('updateWeather', function(config) {
-		var widgetConfig = client.widgets[config.id];
-		widgetConfig.other.city = config.city;
-		widgetConfig.other.country = config.country;
-		widgetConfig.other.countryCode = widgets.getCountryCode(config.city, config.country);
-		widgetConfig.interval = config.interval;
-		widgets.resetTimer(client, widgetConfig);
-		if (widgetConfig.other.countryCode)
-			widgets.update(client, widgetConfig);
+		client.widgets[config.id].other.city = config.city;
+		client.widgets[config.id].other.country = config.country;
+		client.widgets[config.id].other.countryCode = widgets.getCountryCode(config.city, config.country);
+		client.widgets[config.id].interval = config.interval;
+		clearTimeout(client.widgets[config.id].timer);
+		if (client.widgets[config.id].other.countryCode)
+			widgets.update(client, client.widgets[config.id]);
 		else
 			console.log("weather update: missing country");
 	});
@@ -233,13 +234,37 @@ io.on('connection', function(client) {
 	});
 
 	client.on('updateImdbWidget', function(config) {
-		var widgetConfig = client.widgets[config.id];
-		widgetConfig.other.lang = config.lang;
-		widgetConfig.interval = config.interval;
-		if (widgetConfig.other.lang)
-			widgets.update(client, widgetConfig);
+		client.widgets[config.id].other.lang = config.lang;
+		client.widgets[config.id].interval = config.interval;
+		clearTimeout(client.widgets[config.id].timer);
+		if (client.widgets[config.id].other.lang)
+			widgets.update(client, client.widgets[config.id]);
 		else
 			console.log("IMDb add: missing language");
+	});
+
+	// PHOTOS WIDGET
+
+	client.on('addPhotoWidget', function(config) {
+		const widgetConfig = {
+			id: client.nbApps.toString(),
+			type: "photo",
+			sizeX: '3',
+			sizeY: '2',
+			interval: config.interval,
+		};
+
+		client.nbApps += 1;
+		widgets.photos(client, widgetConfig);
+		console.log(` + User ${client.username} add widget ${widgetConfig.id}`);
+	});
+
+	client.on('updatePhotoWidget', function(config) {
+		client.widgets[config.id].interval = config.interval;
+		client.widgets[config.id].sizeX = config.sizeX;
+		client.widgets[config.id].sizeY = config.sizeY;
+		clearTimeout(client.widgets[config.id].timer);
+		widgets.update(client, client.widgets[config.id]);
 	});
 
 	client.on('addClockWidget', config => {
