@@ -33,8 +33,8 @@ function sendWidget(client, widgetConfig, widget) {
 				update(client, widgetConfig);
 				console.log(' * Widget update: '+ widgetConfig.id + " (every " +  widgetConfig.interval + "s)");
 			}, widgetConfig.interval * 1000);
-			client.emit('addWidget', widget);
-		};
+		}
+		client.emit('addWidget', widget);
 	};
 };
 
