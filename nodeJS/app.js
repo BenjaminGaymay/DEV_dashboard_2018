@@ -91,6 +91,7 @@ io.on('connection', function(client) {
 			return;
 		UserSchema.findOne({"local.username": datas.username}).then(function(bonhomme) {
 			client.username = datas.username;
+			client.connected = true;
 			client.widgets = {};
 			if (bonhomme.widgets) {
 				for (const widget of Object.values(bonhomme.widgets))
@@ -125,7 +126,8 @@ io.on('connection', function(client) {
 
 	client.on('removeWidgetByID', function(widgetID) {
 		if (client.widgets[widgetID]) {
-			clearTimeout(client.widgets[widgetID].timer);
+			client.widgets[widgetID].loop = false
+			clearInterval(client.widgets[widgetID].timer);
 			client.emit('removeWidget', widgetID);
 			delete client.widgets[widgetID];
 			console.log(` - User ${client.username} remove widget ${widgetID}`);
@@ -134,9 +136,10 @@ io.on('connection', function(client) {
 	});
 
 	client.on('disconnect', function() {
+		client.connected = false;
 		if (client && client.widgets)
 			for (var widget of Object.values(client.widgets)) {
-				clearTimeout(client.widgets[widget.id].timer);
+				clearInterval(client.widgets[widget.id].timer);
 				client.widgets[widget.id].loop = false;
 			};
 
@@ -152,6 +155,7 @@ io.on('connection', function(client) {
 			interval: config.interval,
 			sizeX: '2',
 			sizeY: '2',
+			loop: true,
 			other: {
 				city: config.city,
 				country: config.country,
@@ -174,7 +178,7 @@ io.on('connection', function(client) {
 		client.widgets[config.id].other.country = config.country;
 		client.widgets[config.id].other.countryCode = widgets.getCountryCode(config.city, config.country);
 		client.widgets[config.id].interval = config.interval;
-		clearTimeout(client.widgets[config.id].timer);
+		widgets.updateInterval(client, client.widgets[config.id], config.id);
 		if (client.widgets[config.id].other.countryCode)
 			widgets.update(client, client.widgets[config.id]);
 		else
@@ -220,6 +224,7 @@ io.on('connection', function(client) {
 			sizeX: '3',
 			sizeY: '4',
 			interval: config.interval,
+			loop: true,
 			other: {
 				lang: config.lang
 			}
@@ -236,7 +241,7 @@ io.on('connection', function(client) {
 	client.on('updateImdbWidget', function(config) {
 		client.widgets[config.id].other.lang = config.lang;
 		client.widgets[config.id].interval = config.interval;
-		clearTimeout(client.widgets[config.id].timer);
+		widgets.updateInterval(client, client.widgets[config.id], config.id);
 		if (client.widgets[config.id].other.lang)
 			widgets.update(client, client.widgets[config.id]);
 		else
@@ -251,6 +256,7 @@ io.on('connection', function(client) {
 			type: "photo",
 			sizeX: '3',
 			sizeY: '2',
+			loop: true,
 			interval: config.interval,
 		};
 
@@ -263,7 +269,7 @@ io.on('connection', function(client) {
 		client.widgets[config.id].interval = config.interval;
 		client.widgets[config.id].sizeX = config.sizeX;
 		client.widgets[config.id].sizeY = config.sizeY;
-		clearTimeout(client.widgets[config.id].timer);
+		widgets.updateInterval(client, client.widgets[config.id], config.id);
 		widgets.update(client, client.widgets[config.id]);
 	});
 
@@ -280,16 +286,15 @@ io.on('connection', function(client) {
 			widgets.clock(client, widgetConfig);
 			console.log(` + User ${client.username} add widget ${widgetConfig.id}`);
 		} else
-			console.log("radio add: missing radio name");
+			console.log("clock add: missing country");
 	});
 
 	client.on('updateClockWidget', config => {
 		client.widgets[config.id].name = config.name;
-		clearTimeout(client.widgets[config.id].timer);
 		if (client.widgets[config.id].name)
 			widgets.update(client, client.widgets[config.id]);
 		else
-			console.log("IMDb add: missing language");
+			console.log("clock add: missing country");
 	});
 
 });

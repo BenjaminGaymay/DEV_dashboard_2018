@@ -40,6 +40,19 @@
 					"type": "int"
 				}]
 			}]
+		}, {
+			"name": "photos",
+			"widgets": [{
+				"name": "photos widget",
+				"description": "Show random images",
+				"params": [{
+					"size": "size of the images",
+					"type": "resize with cursor"
+				}, {
+					"interval": "interval between updates",
+					"type": "int"
+				}]
+			}]
 		}]
 	}
 }
