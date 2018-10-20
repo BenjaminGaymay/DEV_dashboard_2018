@@ -32,7 +32,7 @@ module.exports = (server, session) => {
         // GENERICS FUNCTIONS
         client.on('join', function() {
             UserSchema.findOne({ "local.username": client.handshake.session.username }).then(function(person) {
-                client.username = datas.username;
+                client.username = client.handshake.session.username;
                 client.widgets = {};
                 console.log(person);
                 if (person.widgets) {
