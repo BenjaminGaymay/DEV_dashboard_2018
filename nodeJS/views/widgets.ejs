@@ -51,6 +51,16 @@
                     </datalist>
                 </form>
 
+                <form id="add-trade" class="text-center">
+                    <input id="input-trade-name" list="tradeList" placeholder="Bourse ...">
+                    <button class="btn btn-action"> Add Trade widget </button>
+                    <datalist id='tradeList'>
+                        <% for (const city of cities) { %>
+                            <option value="<%= city %>"><%= city %></option>
+                        <% } %>
+                    </datalist>
+                </form>
+
                 <button id="btn-update" class="btn btn-action"> Update widgets </button>
                 <button id="btn-serialize" class="btn btn-action"> Save widgets </button>
             </div>

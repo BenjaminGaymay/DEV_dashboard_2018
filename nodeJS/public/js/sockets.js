@@ -5,6 +5,7 @@
 	// GENERICS FUNCTIONS
 
 	socket.on('connect', function() {
+		console.log(getCookie('username'));
 		socket.emit('join', {username: getCookie('username')});
 	});
 
@@ -96,4 +97,15 @@
 			name
 		});
 	});
+
+	$('#add-trade').submit(function(e) {
+		e.preventDefault();
+		alert("Heyooo");
+		const name = $('#input-trade-name').val();
+		socket.emit('addTradeWidget', {
+			name
+		});
+	});
+
+
 }());

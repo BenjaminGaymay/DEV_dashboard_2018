@@ -2,6 +2,7 @@ const request = require('request');
 const fs = require('fs');
 const ejs = require('ejs');
 const moment = require('moment-timezone');
+const alpha = require('alphavantage')({ key: process.env.ALPHAVANTAGE_KEY });
 
 // Basics widgets functions
 
@@ -236,6 +237,35 @@ function clock(client, widgetConfig) {
 	});
 }
 
+// Trade
+
+const tradeList = require('./trade.json');
+function trade(client, widgetConfig) {
+	// alpha.data.intraday(`msft`).then(data => {
+	// 	console.log(data);
+	//   });
+
+	const price = "2I3PJ0WZLCVIQ5FW";
+	return;
+	ejs.renderFile(`${__dirname}/templates/clock.ejs`, {
+		city: widgetConfig.name,
+		time,
+		id: widgetConfig.id
+	}, 'cache', (err, content) => {
+		if (err) console.log(err);
+		const widget = {
+			id: widgetConfig.id,
+			type: widgetConfig.type,
+			content,
+			sizeX: widgetConfig.sizeX,
+			sizeY: widgetConfig.sizeY,
+			posX: widgetConfig.posX ? widgetConfig.posX : undefined,
+			posY: widgetConfig.posY ? widgetConfig.posY : undefined,
+		};
+		sendWidget(client, widgetConfig, widget);
+	});
+}
+
 module.exports = {
 	update,
 	weather,
@@ -246,5 +276,7 @@ module.exports = {
 	imdb,
 	photos,
 	clock,
-	clockList
+	clockList,
+	trade,
+	tradeList
 };
