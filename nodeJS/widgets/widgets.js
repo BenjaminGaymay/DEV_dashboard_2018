@@ -201,7 +201,7 @@ function imdb(client, widgetConfig) {
 // Photos widget
 
 function photos(client, widgetConfig) {
-	request("https://picsum.photos/" + widgetConfig.sizeX * 150 + "/" + widgetConfig.sizeY * 150 + "/?random", function(err, resp, body) {
+	request("https://picsum.photos/" + widgetConfig.sizeX * 150 + "/" + widgetConfig.sizeY * 120 + "/?random", function(err, resp, body) {
 		ejs.renderFile(__dirname + "/templates/photos.ejs", {
 				id: widgetConfig.id,
 				interval: widgetConfig.interval,
