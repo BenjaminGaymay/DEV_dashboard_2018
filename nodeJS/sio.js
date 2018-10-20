@@ -24,7 +24,6 @@ module.exports = (server, session) => {
     io.use(sharedSession(session, { autoSave: true }));
 
     io.on('connection', function (client) {
-        console.log(client.handshake.session.username);
         // Initialize new user
         client.widgets = {};
         client.nbApps = 0;
@@ -216,8 +215,8 @@ module.exports = (server, session) => {
                 name: config.name,
                 id: client.nbApps.toString(),
                 type: 'clock',
-                sizeX: '1',
-                sizeY: '2',
+                sizeX: '2',
+                sizeY: '1',
             }
             if (widgetConfig.name) {
                 client.nbApps += 1;
@@ -237,12 +236,13 @@ module.exports = (server, session) => {
         });
 
         client.on('addTradeWidget', config => {
-            const configWidget = {
+            const widgetConfig = {
                 name: config.name,
                 id: client.nbApps.toString(),
                 type: 'trade',
-                sizeX: '1',
+                sizeX: '2',
                 sizeY: '1',
+                interval: '300'
             };
             if (widgetConfig.name) {
                 client.nbApps += 1;
@@ -253,6 +253,8 @@ module.exports = (server, session) => {
         });
 
         client.on('updateTradeWidget', config => {
+            console.log('updateTradeWidget');
+            console.log(config);
             client.widgets[config.id].name = config.name;
             clearTimeout(client.widgets[config.id].timer);
             if (client.widgets[config.id].name)

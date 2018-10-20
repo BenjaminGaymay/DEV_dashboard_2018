@@ -52,13 +52,12 @@
                 </form>
 
                 <form id="add-trade" class="text-center">
-                    <input id="input-trade-name" list="tradeList" placeholder="Bourse ...">
-                    <button class="btn btn-action"> Add Trade widget </button>
-                    <datalist id='tradeList'>
-                        <% for (const city of cities) { %>
-                            <option value="<%= city %>"><%= city %></option>
+                    <select class="form-control" id="trade-name">
+                        <% for (const stock of stocks) { %>
+                            <option value="<%= stock %>"><%= stock %></option>
                         <% } %>
-                    </datalist>
+                      </select>
+                    <button class="btn btn-action"> Add Trade widget </button>
                 </form>
 
                 <button id="btn-update" class="btn btn-action"> Update widgets </button>

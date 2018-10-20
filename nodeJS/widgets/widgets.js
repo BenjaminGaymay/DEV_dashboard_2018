@@ -13,6 +13,7 @@ function update(client, widgetConfig) {
 		case "imdb": imdb(client, widgetConfig); break;
 		case "photo": photos(client, widgetConfig); break;
 		case "clock": clock(client, widgetConfig); break;
+		case "trade": trade(client, widgetConfig); break;
 	};
 };
 
@@ -240,30 +241,36 @@ function clock(client, widgetConfig) {
 // Trade
 
 const tradeList = require('./trade.json');
-function trade(client, widgetConfig) {
-	// alpha.data.intraday(`msft`).then(data => {
-	// 	console.log(data);
-	//   });
 
-	const price = "2I3PJ0WZLCVIQ5FW";
-	return;
-	ejs.renderFile(`${__dirname}/templates/clock.ejs`, {
-		city: widgetConfig.name,
-		time,
-		id: widgetConfig.id
-	}, 'cache', (err, content) => {
-		if (err) console.log(err);
-		const widget = {
-			id: widgetConfig.id,
-			type: widgetConfig.type,
-			content,
-			sizeX: widgetConfig.sizeX,
-			sizeY: widgetConfig.sizeY,
-			posX: widgetConfig.posX ? widgetConfig.posX : undefined,
-			posY: widgetConfig.posY ? widgetConfig.posY : undefined,
-		};
-		sendWidget(client, widgetConfig, widget);
-	});
+function trade(client, widgetConfig) {
+	if (!widgetConfig.name)
+		return;
+	alpha.data.intraday(widgetConfig.name, 'compact', 'json', '5min')
+		.then(data => {
+			const symbol = data['Meta Data']['2. Symbol']
+			const lastRefreshed = data['Meta Data']['3. Last Refreshed']
+			const lastTradePriceOnly = data['Time Series (5min)'][lastRefreshed]['4. close']
+			const lastVolume = data['Time Series (5min)'][lastRefreshed]['5. volume']
+			ejs.renderFile(`${__dirname}/templates/trade.ejs`, {
+				name: symbol,
+				price: lastTradePriceOnly,
+				id: widgetConfig.id,
+				stocks: tradeList
+			}, 'cache', (err, content) => {
+				if (err) console.log(err);
+				const widget = {
+					id: widgetConfig.id,
+					type: widgetConfig.type,
+					content,
+					sizeX: widgetConfig.sizeX,
+					sizeY: widgetConfig.sizeY,
+					posX: widgetConfig.posX ? widgetConfig.posX : undefined,
+					posY: widgetConfig.posY ? widgetConfig.posY : undefined,
+				};
+				sendWidget(client, widgetConfig, widget);
+			});
+		})
+		.catch(console.log);
 }
 
 module.exports = {

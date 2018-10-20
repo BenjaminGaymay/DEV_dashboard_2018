@@ -99,16 +99,20 @@ function addListeners(socket, id, type) {
                 $(`#resize_${id}`).toggle();
             });
             break;
-    };
+        case 'trade':
+            $(`#widgetSettings_${id}`).submit(function(e) {
+                e.preventDefault();
+                const name = $(`#trade-name_${id}`).val();
+                console.log(name);
+                socket.emit('updateTradeWidget', {
+                    name,
+                    id,
+                });
+                $(this).toggle();
+            });
+            break;
+        }
 };
 
-function updateTime() {
-    $(document).on('click', '.clock-display', e => {
-        console.log("loaze");
-    });
-    $(document).on('change', '.gridster .ready', e => {
-        console.log("wat??");
-    });
-}
 
 // updateTime();

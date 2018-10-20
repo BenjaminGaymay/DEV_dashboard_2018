@@ -82,7 +82,7 @@ module.exports = passport => {
                 if (err)
                     return done(err);
                 if (!user || !user.validPassword(password)) {
-                    return done(null, false, req.flash('loginMessage', 'Email ou mot de passe incorrect(s)'));
+                    return done(null, false, req.flash('loginMessage', 'Nom d\'utilisateur ou mot de passe incorrect(s)'));
                 }
                 req.session.username = username;
                 return done(null, user);

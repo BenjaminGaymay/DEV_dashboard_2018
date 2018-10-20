@@ -5,8 +5,7 @@
 	// GENERICS FUNCTIONS
 
 	socket.on('connect', function() {
-		console.log(getCookie('username'));
-		socket.emit('join', {username: getCookie('username')});
+		socket.emit('join');
 	});
 
 	socket.on('reload', function() {
@@ -100,8 +99,7 @@
 
 	$('#add-trade').submit(function(e) {
 		e.preventDefault();
-		alert("Heyooo");
-		const name = $('#input-trade-name').val();
+		const name = $('#trade-name').val();
 		socket.emit('addTradeWidget', {
 			name
 		});

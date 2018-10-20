@@ -1,0 +1,16 @@
+<i class="fas fa-cog" id='setting_<%= id %>'></i>
+<i class="fas fa-trash-alt" id='delete_<%= id %>'></i>
+
+<form class="form-group" id='widgetSettings_<%= id %>' style='display: none'>
+    <select class="form-control" id="trade-name_<%= id %>">
+    <% for (const stock of stocks) { %>
+        <option value="<%= stock %>"><%= stock %></option>
+    <% } %>
+    </select>
+	<button class="btn btn-action align-text-bottom">Change configuration</button>
+</form>
+
+<div id='widget_<%= id %>'>
+    <h2><%= name %></h2>
+    <span class=""><%= price %>$</span>
+</div>

@@ -74,6 +74,7 @@ router.get('/widgets', isLoggedIn ,(req, res) => {
 		username: req.user.local.username,
 		radioList: widgets.radioList,
 		cities: widgets.clockList,
+		stocks: widgets.tradeList,
 		socket: true
 	});
 });
