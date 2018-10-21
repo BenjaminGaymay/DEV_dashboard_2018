@@ -33,7 +33,6 @@ module.exports = (server, session) => {
             UserSchema.findOne({ "local.username": client.handshake.session.username }).then(function(person) {
                 client.username = client.handshake.session.username;
                 client.widgets = {};
-                console.log(person);
                 if (person.widgets) {
                     for (const widget of Object.values(person.widgets))
                         widgets.update(client, widget);
@@ -253,8 +252,6 @@ module.exports = (server, session) => {
         });
 
         client.on('updateTradeWidget', config => {
-            console.log('updateTradeWidget');
-            console.log(config);
             client.widgets[config.id].name = config.name;
             clearTimeout(client.widgets[config.id].timer);
             if (client.widgets[config.id].name)
