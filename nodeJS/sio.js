@@ -37,7 +37,7 @@ module.exports = (server, session) => {
                 if (person.widgets) {
                     for (const widget of Object.values(person.widgets))
                         widgets.update(client, widget);
-                    client.nbApps = Object.keys(person.widgets).length;
+                    client.nbApps = Object.keys(person.widgets).length + 1;
                 };
                 console.log(`[+] New user connected via socket.io : ${client.username}`);
             }).catch(err => {
