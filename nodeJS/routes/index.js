@@ -52,6 +52,7 @@ router.post('/signup', passport.authenticate('local-signup', {
 }));
 
 router.get('/about.json', (req, res, next) => {
+
 	const fs = require('fs');
 	const about = JSON.parse(fs.readFileSync('about.json', 'utf8'));
 
@@ -73,6 +74,7 @@ router.get('/widgets', isLoggedIn ,(req, res) => {
 		username: req.user.local.username,
 		radioList: widgets.radioList,
 		cities: widgets.clockList,
+		stocks: widgets.tradeList,
 		socket: true
 	});
 });
