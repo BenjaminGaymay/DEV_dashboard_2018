@@ -54,7 +54,6 @@ module.exports = passport => {
     // by default, if there was no name, it would just be called 'local'
     passport.use('local-signup', new LocalStrategy({ passReqToCallback: true },
         (req, username, password, done) => {
-            console.log(req.body);
             UserSchema.findOne({ 'local.username' :  username }, (err, user) => {
                 if (err)
                     return done(err);
