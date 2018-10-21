@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-ADD app.js db.js package.json about.json .env /app/
+ADD app.js db.js package.json about.json sio.js .env /app/
 ADD routes /app/routes
 ADD views /app/views
 ADD widgets /app/widgets
