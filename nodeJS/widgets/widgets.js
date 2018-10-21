@@ -13,7 +13,7 @@ function updateInterval(client, widgetConfig, widgetID) {
 	client.widgets[widgetID].timer = setInterval(function() {
 		if (client.widgets[widgetID] && client.widgets[widgetID].loop && client.connected) {
 			update(client, widgetConfig);
-			console.log(' * Widget update1: '+ widgetConfig.id + " (every " +  widgetConfig.interval + "s)");
+			console.log(' * Widget update: '+ widgetConfig.id + " (every " +  widgetConfig.interval + "s)");
 		} else
 			clearInterval(this);
 	}, widgetConfig.interval * 1000);

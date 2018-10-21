@@ -32,8 +32,8 @@ module.exports = (server, session) => {
         client.on('join', function() {
             UserSchema.findOne({ "local.username": client.handshake.session.username }).then(function(person) {
                 client.username = client.handshake.session.username;
+                client.connected = true;
                 client.widgets = {};
-                console.log(person);
                 if (person.widgets) {
                     for (const widget of Object.values(person.widgets))
                         widgets.update(client, widget);
@@ -41,7 +41,6 @@ module.exports = (server, session) => {
                 };
                 console.log(`[+] New user connected via socket.io : ${client.username}`);
             }).catch(err => {
-                console.log(err);
                 console.log("socket.io: link with database failed")
                 client.emit('reload');
             });
@@ -68,7 +67,8 @@ module.exports = (server, session) => {
 
         client.on('removeWidgetByID', function (widgetID) {
             if (client.widgets[widgetID]) {
-                clearTimeout(client.widgets[widgetID].timer);
+                client.widgets[widgetID].loop = false
+                clearInterval(client.widgets[widgetID].timer);
                 client.emit('removeWidget', widgetID);
                 delete client.widgets[widgetID];
                 console.log(` - User ${client.username} remove widget ${widgetID}`);
@@ -77,6 +77,7 @@ module.exports = (server, session) => {
         });
 
         client.on('disconnect', function () {
+            client.connected = false;
             if (client && client.widgets)
                 for (var widget of Object.values(client.widgets)) {
                     clearTimeout(client.widgets[widget.id].timer);
@@ -93,6 +94,7 @@ module.exports = (server, session) => {
                 id: client.nbApps.toString(),
                 type: "weather",
                 interval: config.interval,
+                loop: true,
                 sizeX: '2',
                 sizeY: '2',
                 other: {
@@ -117,7 +119,7 @@ module.exports = (server, session) => {
             client.widgets[config.id].other.country = config.country;
             client.widgets[config.id].other.countryCode = widgets.getCountryCode(config.city, config.country);
             client.widgets[config.id].interval = config.interval;
-            clearTimeout(client.widgets[config.id].timer);
+            widgets.updateInterval(client, client.widgets[config.id], config.id);
             if (client.widgets[config.id].other.countryCode)
                 widgets.update(client, client.widgets[config.id]);
             else
@@ -163,6 +165,7 @@ module.exports = (server, session) => {
                 sizeX: '3',
                 sizeY: '4',
                 interval: config.interval,
+                loop: true,
                 other: {
                     lang: config.lang
                 }
@@ -179,7 +182,7 @@ module.exports = (server, session) => {
         client.on('updateImdbWidget', function (config) {
             client.widgets[config.id].other.lang = config.lang;
             client.widgets[config.id].interval = config.interval;
-            clearTimeout(client.widgets[config.id].timer);
+            widgets.updateInterval(client, client.widgets[config.id], config.id);
             if (client.widgets[config.id].other.lang)
                 widgets.update(client, client.widgets[config.id]);
             else
@@ -195,6 +198,7 @@ module.exports = (server, session) => {
                 sizeX: '3',
                 sizeY: '2',
                 interval: config.interval,
+                loop: true
             };
 
             client.nbApps += 1;
@@ -206,7 +210,7 @@ module.exports = (server, session) => {
             client.widgets[config.id].interval = config.interval;
             client.widgets[config.id].sizeX = config.sizeX;
             client.widgets[config.id].sizeY = config.sizeY;
-            clearTimeout(client.widgets[config.id].timer);
+            widgets.updateInterval(client, client.widgets[config.id], config.id);
             widgets.update(client, client.widgets[config.id]);
         });
 
@@ -223,16 +227,16 @@ module.exports = (server, session) => {
                 widgets.clock(client, widgetConfig);
                 console.log(` + User ${client.username} add widget ${widgetConfig.id}`);
             } else
-                console.log("radio add: missing radio name");
+                console.log("clock: missing name");
         });
 
         client.on('updateClockWidget', config => {
             client.widgets[config.id].name = config.name;
-            clearTimeout(client.widgets[config.id].timer);
+            widgets.updateInterval(client, client.widgets[config.id], config.id);
             if (client.widgets[config.id].name)
                 widgets.update(client, client.widgets[config.id]);
             else
-                console.log("IMDb add: missing language");
+                console.log("clock update: missing name");
         });
 
         client.on('addTradeWidget', config => {
@@ -242,7 +246,8 @@ module.exports = (server, session) => {
                 type: 'trade',
                 sizeX: '2',
                 sizeY: '1',
-                interval: '300'
+                interval: '300',
+                loop: true
             };
             if (widgetConfig.name) {
                 client.nbApps += 1;
@@ -254,13 +259,12 @@ module.exports = (server, session) => {
 
         client.on('updateTradeWidget', config => {
             console.log('updateTradeWidget');
-            console.log(config);
             client.widgets[config.id].name = config.name;
-            clearTimeout(client.widgets[config.id].timer);
+            widgets.updateInterval(client, client.widgets[config.id], config.id);
             if (client.widgets[config.id].name)
                 widgets.update(client, client.widgets[config.id]);
             else
-                console.log("IMDb add: missing language");
+                console.log("trade update: missing name");
         })
     });
 }
