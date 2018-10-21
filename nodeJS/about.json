@@ -53,6 +53,26 @@
 					"type": "int"
 				}]
 			}]
+		}, {
+			"name": "clock",
+			"widgets": [{
+				"name": "clock widget",
+				"description": "Show clock of selected city",
+				"params": [{
+					"city": "name of the city",
+					"type": "string"
+				}]
+			}]
+		}, {
+			"name": "trade",
+			"widgets": [{
+				"name": "trade widget",
+				"description": "Show current stock price of a company",
+				"params": [{
+					"name": "name of the company",
+					"type": "string"
+				}]
+			}]
 		}]
 	}
 }
