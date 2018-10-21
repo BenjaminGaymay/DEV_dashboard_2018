@@ -221,6 +221,8 @@ module.exports = (server, session) => {
                 type: 'clock',
                 sizeX: '2',
                 sizeY: '1',
+                interval: '1',
+                loop: true,
             }
             if (widgetConfig.name) {
                 client.nbApps += 1;
