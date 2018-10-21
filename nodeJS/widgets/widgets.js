@@ -4,6 +4,22 @@ const ejs = require('ejs');
 const moment = require('moment-timezone');
 const alpha = require('alphavantage')({ key: process.env.ALPHAVANTAGE_KEY });
 
+// Timer
+timers = {};
+
+function updateInterval(client, widgetConfig, widgetID) {
+	clearInterval(timers[client.username + widgetID]);
+	console.log(' * Widget update interval: '+ widgetID + " (every " +  widgetConfig.interval + "s)");
+	client.widgets[widgetID].timer = setInterval(function() {
+		if (client.widgets[widgetID] && client.widgets[widgetID].loop && client.connected) {
+			update(client, widgetConfig);
+			console.log(' * Widget update1: '+ widgetConfig.id + " (every " +  widgetConfig.interval + "s)");
+		} else
+			clearInterval(this);
+	}, widgetConfig.interval * 1000);
+	timers[client.username + widgetID] = client.widgets[widgetID].timer;
+};
+
 // Basics widgets functions
 
 function update(client, widgetConfig) {
@@ -21,21 +37,19 @@ function sendWidget(client, widgetConfig, widget) {
 	if (client.widgets[widget.id]) {
 			client.widgets[widget.id] = widgetConfig;
 			client.emit('updateWidget', widget);
-			if (client.widgets[widget.id] && client.widgets[widget.id].loop) {
-				client.widgets[widget.id].timer = setTimeout(function() {
-					update(client, widgetConfig);
-					console.log(' * Widget update: '+ widgetConfig.id + " (every " +  widgetConfig.interval + "s)");
-				}, widgetConfig.interval * 1000);
-			};
 	} else {
 		client.widgets[widget.id] = widgetConfig;
-		client.widgets[widget.id].loop = client.widgets[widget.id].interval ? true : false;
-		if (client.widgets[widget.id].loop) {
-			client.widgets[widget.id].timer = setTimeout(function() {
-				update(client, widgetConfig);
-				console.log(' * Widget update: '+ widgetConfig.id + " (every " +  widgetConfig.interval + "s)");
+		if (client.widgets[widget.id].loop && client.connected) {
+			console.log(' * Create interval: '+ widgetConfig.id + " (every " +  widgetConfig.interval + "s)");
+			client.widgets[widget.id].timer = setInterval(function() {
+				if (client.widgets[widget.id] && client.widgets[widget.id].loop && client.connected) {
+					update(client, widgetConfig);
+					console.log(' * Widget update: '+ widgetConfig.id + " (every " +  widgetConfig.interval + "s)");
+				} else
+					clearInterval(this);
 			}, widgetConfig.interval * 1000);
-		}
+			timers[client.username + widget.id] = client.widgets[widget.id].timer;
+		};
 		client.emit('addWidget', widget);
 	};
 };
@@ -189,7 +203,7 @@ function imdb(client, widgetConfig) {
 // Photos widget
 
 function photos(client, widgetConfig) {
-	request("https://picsum.photos/" + widgetConfig.sizeX * 150 + "/" + widgetConfig.sizeY * 150 + "/?random", function(err, resp, body) {
+	request("https://picsum.photos/" + widgetConfig.sizeX * 150 + "/" + widgetConfig.sizeY * 120 + "/?random", function(err, resp, body) {
 		ejs.renderFile(__dirname + "/templates/photos.ejs", {
 				id: widgetConfig.id,
 				interval: widgetConfig.interval,
@@ -274,6 +288,7 @@ function trade(client, widgetConfig) {
 }
 
 module.exports = {
+	updateInterval,
 	update,
 	weather,
 	weatherCities,
