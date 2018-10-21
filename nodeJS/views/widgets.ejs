@@ -1,64 +1,181 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-sm-6 offset-sm-3 text-center">
-            <h1 class="display-2"> Bonjour <%= username %> </h1>
+            <h1 class="display-2"> Bonjour
+                <%= username %>
+            </h1>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Widgets</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="m-card">
+                            <div class="m-card-header bg-red">
+                                <div class="m-card-title">Météo</div>
+                            </div>
+                            <div class="m-card-body">
+                                <form id="add-weather" class="text-center">
+                                    <div class="form-group text-left">
+                                        <input class="form-control" id="input-weather-city" list="weatherCities" value="Paris, France">
+                                        <small class="form-text text-muted">Ville</small>
+                                        <input class="form-control" id="input-weather-interval" placeholder="Interval in seconds..."
+                                            type="number" step="1" min="10" max="60" value="10">
+                                        <small class="form-text text-muted">Mis à jour de la météo (en sec)</small>
+                                        <datalist id='weatherCities'>
+                                            <% for(var i = 0 ; i < citiesList.length ; i++) { %>
+                                            <option value="<%= citiesList[i] %>">
+                                                <%= citiesList[i] %>
+                                            </option>
+                                            <% } %>
+                                        </datalist>
+                                    </div>
+                                    <button class="btn btn-primary mt-1 btn-circle btn-action">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="m-card">
+                            <div class="m-card-header bg-dark-blue">
+                                <div class="m-card-title">Radio</div>
+                            </div>
+                            <div class="m-card-body">
+                                <form id="add-radio" class="text-center">
+                                    <div class="form-group text-left">
+                                        <input class="form-control" id="input-radio-name" list="radioList" placeholder="Radio ..."
+                                            value="Radio Classique">
+                                        <small class="form-text text-muted">Radio (défaut: Radio Classique)</small>
+                                        <datalist id='radioList'>
+                                            <% for(var i = 0 ; i < radioList.length ; i++) { %>
+                                                <option value="<%= radioList[i] %>">
+                                                    <%= radioList[i] %>
+                                                </option>
+                                                <% } %>
+                                            </datalist>
+                                        </div>
+                                    <button class="btn btn-primary mt-1 btn-circle btn-action">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="m-card">
+                            <div class="m-card-header bg-light-orange">
+                                <div class="m-card-title">IMDb</div>
+                            </div>
+
+                            <div class="m-card-body">
+                                <form id="add-imdb" class="text-center">
+                                    <div class="form-group text-left">
+                                        <input class="form-control" id="input-lang" list="langList" placeholder="Langue ..."
+                                            value="Français">
+                                        <small class="form-text text-muted">Langue (défaut: Français)</small>
+                                        <input class="form-control" id="input-imdb-interval" placeholder="Interval in seconds..."
+                                            type="number" step="1" min="10" max="60" value="60">
+                                        <small class="form-text text-muted">Mis à jour des films (en sec)</small>
+                                            <datalist id='langList'>
+                                                <option value="Français">Français</option>
+                                                <option value="English">English</option>
+                                            </datalist>
+                                        </div>
+                                    <button class="btn btn-primary mt-1 btn-circle btn-action">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="m-card">
+                            <div class="m-card-header bg-salmon">
+                                <div class="m-card-title">Photos</div>
+                            </div>
+                            <div class="m-card-body">
+                                <form id="add-photo" class="text-center">
+                                    <div class="form-group text-left">
+                                        <input class="form-control" id="input-photo-interval" placeholder="Interval in seconds..."
+                                            type="number" step="1" min="10" max="60" value="30">
+                                        <small class="form-text text-muted">Mis à jour des photos (en sec)</small>
+                                    </div>
+                                    <button class="btn btn-primary mt-1 btn-circle btn-action">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="m-card">
+                            <div class="m-card-header bg-green">
+                                <div class="m-card-title">Horloge</div>
+                            </div>
+                            <div class="m-card-body">
+                                <form id="add-clock" class="text-center">
+                                    <div class="form-group text-left">
+                                        <input class="form-control" id="input-clock-name" list="clockList" placeholder="Horloge ..."
+                                            value="Europe/Vatican">
+                                            <small class="form-text text-muted">Sélectionner la ville</small>
+                                            <datalist id='clockList'>
+                                                <% for (const city of cities) { %>
+                                                    <option value="<%= city %>">
+                                                        <%= city %>
+                                                    </option>
+                                                    <% } %>
+                                                </datalist>
+                                            </div>
+                                    <button class="btn btn-primary mt-1 btn-circle btn-action">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="m-card">
+                            <div class="m-card-header bg-blue">
+                                <div class="m-card-title">
+                                    Bourse
+                                </div>
+                            </div>
+                            <div class="m-card-body">
+                                <form id="add-trade" class="text-center">
+                                    <div class="form-group text-left">
+                                        <select class="form-control" id="trade-name">
+                                            <% for (const stock of stocks) { %>
+                                            <option value="<%= stock %>">
+                                                <%= stock %>
+                                            </option>
+                                            <% } %>
+                                        </select>
+                                        <small class="form-text text-muted">Selectionner l'entreprise à suivre</small>
+                                    </div>
+                                    <button class="btn btn-primary my-1 btn-circle btn-action">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-12">
-            <div class="jumbotron">
-                <form id="add-weather" class="text-center">
-                    <input id="input-weather-city" list="weatherCities" value="Paris, France">
-                    <input id="input-weather-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="10">
-                    <button class="btn btn-action"> Add weather widget </button>
-                    <datalist id='weatherCities'>
-                        <% for(var i = 0 ; i < citiesList.length ; i++) { %>
-                            <option value="<%= citiesList[i] %>"><%= citiesList[i] %></option>
-                        <% } %>
-                    </datalist>
-                </form>
+            <div class="jumbotron text-center">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Ajouter un widget
+                </button>
 
-                <form id="add-radio" class="text-center">
-                    <input id="input-radio-name" list="radioList" placeholder="Radio ..." value="Radio Classique">
-                    <button class="btn btn-action"> Add radio widget </button>
-                    <datalist id='radioList'>
-                        <% for(var i = 0 ; i < radioList.length ; i++) { %>
-                            <option value="<%= radioList[i] %>"><%= radioList[i] %></option>
-                        <% } %>
-                    </datalist>
-                </form>
-
-                <form id="add-imdb" class="text-center">
-                    <input id="input-lang" list="langList" placeholder="Langue ..." value="Français">
-                    <input id="input-imdb-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="60">
-                    <button class="btn btn-action"> Add IMDb widget </button>
-                    <datalist id='langList'>
-                        <option value="Français">Français</option>
-                        <option value="English">English</option>
-                    </datalist>
-                </form>
-
-                <form id="add-photo" class="text-center">
-                    <input id="input-photo-interval" placeholder="Interval in seconds..." type="number" step="1" min="10" max="60" value="30">
-                    <button class="btn btn-action"> Add photos widget </button>
-                </form>
-
-                <form id="add-clock" class="text-center">
-                    <input id="input-clock-name" list="clockList" placeholder="Horloge ..." value="Europe/Vatican">
-                    <button class="btn btn-action"> Add clock widget </button>
-                    <datalist id='clockList'>
-                        <% for (const city of cities) { %>
-                            <option value="<%= city %>"><%= city %></option>
-                        <% } %>
-                    </datalist>
-                </form>
-
-                <form id="add-trade" class="text-center">
-                    <select class="form-control" id="trade-name">
-                        <% for (const stock of stocks) { %>
-                            <option value="<%= stock %>"><%= stock %></option>
-                        <% } %>
-                      </select>
-                    <button class="btn btn-action"> Add Trade widget </button>
-                </form>
 
                 <button id="btn-update" class="btn btn-action"> Update widgets </button>
                 <button id="btn-serialize" class="btn btn-action"> Save widgets </button>

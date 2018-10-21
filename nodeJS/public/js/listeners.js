@@ -103,7 +103,6 @@ function addListeners(socket, id, type) {
             $(`#widgetSettings_${id}`).submit(function(e) {
                 e.preventDefault();
                 const name = $(`#trade-name_${id}`).val();
-                console.log(name);
                 socket.emit('updateTradeWidget', {
                     name,
                     id,

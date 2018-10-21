@@ -260,7 +260,6 @@ module.exports = (server, session) => {
         });
 
         client.on('updateTradeWidget', config => {
-            console.log('updateTradeWidget');
             client.widgets[config.id].name = config.name;
             widgets.updateInterval(client, client.widgets[config.id], config.id);
             if (client.widgets[config.id].name)
