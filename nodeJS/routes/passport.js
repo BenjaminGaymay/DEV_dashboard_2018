@@ -69,6 +69,7 @@ module.exports = passport => {
                     newUser.save((err) => {
                         if (err)
                             throw err;
+                        req.session.username = username;
                         return done(null, newUser);
                     });
                 }

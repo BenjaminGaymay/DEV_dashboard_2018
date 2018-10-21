@@ -1,1 +1,0 @@
-web: cd nodeJS && node app.js
